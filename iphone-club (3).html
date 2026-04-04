@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iPhone Club — Panel</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0071e3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="iPhone Club">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f5f7;--surface:#fff;--surface2:#f5f5f7;--surface3:#e8e8ed;
+  --border:#d2d2d7;--border2:#c7c7cc;
+  --text:#1d1d1f;--text2:#424245;--text3:#6e6e73;--text4:#aeaeb2;
+  --blue:#0071e3;--blue2:#0077ed;--blue-bg:rgba(0,113,227,.08);--blue-ring:rgba(0,113,227,.2);
+  --green:#34c759;--green-bg:rgba(52,199,89,.1);
+  --red:#ff3b30;--red-bg:rgba(255,59,48,.08);
+  --gold:#ff9f0a;--gold-bg:rgba(255,159,10,.1);
+  --purple:#af52de;--purple-bg:rgba(175,82,222,.08);
+  --r:12px;--r-sm:8px;--r-xs:6px;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.05);
+  --sh-sm:0 1px 2px rgba(0,0,0,.06);
+}
+html{font-size:14px}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ── SHELL ── */
+.shell{display:flex;flex-direction:column;min-height:100vh}
+.topbar{
+  background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 20px;height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo img{width:34px;height:34px;border-radius:8px;flex-shrink:0}
+.logo-name{font-size:16px;font-weight:700;letter-spacing:-.3px}
+.logo-name span{color:var(--blue)}
+.topbar-right{display:flex;gap:6px}
+
+/* ── NAV TABS ── */
+.nav{
+  background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 20px;
+  display:flex;gap:0;overflow-x:auto;
+  position:sticky;top:52px;z-index:99;
+}
+.nav::-webkit-scrollbar{display:none}
+.nav-tab{
+  padding:12px 16px;font-size:13px;font-weight:500;color:var(--text3);
+  border:none;background:none;cursor:pointer;font-family:'Inter',sans-serif;
+  border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;
+  display:flex;align-items:center;gap:6px;
+}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* ── MAIN ── */
+.main{flex:1;max-width:900px;margin:0 auto;width:100%;padding:20px 16px 80px}
+.page{display:none}.page.active{display:block}
+
+/* ── SECTION ── */
+.section{margin-bottom:20px}
+.section-label{font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;padding:0 2px}
+
+/* ── CARD ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
+.card-header{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.card-title{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:7px}
+.card-body{padding:14px 16px}
+.card-footer{padding:11px 16px;border-top:1px solid var(--border);background:var(--surface2);display:flex;gap:8px;justify-content:flex-end}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:var(--r-sm);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .14s;white-space:nowrap;text-decoration:none}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,113,227,.3)}
+.btn-ghost{background:var(--surface);color:var(--text2);border:1px solid var(--border);box-shadow:var(--sh-sm)}
+.btn-ghost:hover{border-color:var(--border2);background:var(--surface2)}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{background:#2db34a;transform:translateY(-1px)}
+.btn-gold{background:var(--gold);color:#fff}
+.btn-gold:hover{background:#e8900a;transform:translateY(-1px)}
+.btn-red{background:var(--red);color:#fff}
+.btn-red:hover{background:#e0352a;transform:translateY(-1px)}
+.btn-purple{background:var(--purple);color:#fff}
+.btn-purple:hover{background:#9b40c8;transform:translateY(-1px)}
+.btn-danger{background:transparent;color:var(--red);border:none;padding:5px 8px;font-size:13px}
+.btn-danger:hover{background:var(--red-bg)}
+.btn-icon{background:var(--surface2);color:var(--text3);border:1px solid var(--border);padding:5px 9px;font-size:13px}
+.btn-icon:hover{background:var(--surface3);color:var(--text)}
+.btn-sm{padding:6px 11px;font-size:12px}
+.btn-xs{padding:4px 8px;font-size:11px;border-radius:var(--r-xs)}
+.btn-full{width:100%;justify-content:center}
+
+/* ── FORM FIELDS ── */
+.f{display:flex;flex-direction:column;gap:3px}
+.f label{font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--text3)}
+.f input,.f select,.f textarea{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-xs);color:var(--text);font-family:'Inter',sans-serif;font-size:13px;padding:8px 10px;outline:none;transition:border-color .13s;width:100%}
+.f textarea{resize:vertical;min-height:80px;line-height:1.5}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-ring);background:var(--surface)}
+.f select option{background:var(--surface)}
+.eg{display:grid;gap:10px}
+.eg1{grid-template-columns:1fr}
+.eg2{grid-template-columns:1fr 1fr}
+.eg3{grid-template-columns:1fr 1fr 1fr}
+
+/* ── PILLS / BADGES ── */
+.badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px;display:inline-flex;align-items:center}
+.badge-blue{background:var(--blue-bg);color:var(--blue)}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.badge-red{background:var(--red-bg);color:var(--red)}
+.badge-gray{background:var(--surface3);color:var(--text3)}
+.badge-gold{background:var(--gold-bg);color:var(--gold)}
+.badge-purple{background:var(--purple-bg);color:var(--purple)}
+
+.tag{font-size:11px;font-weight:500;padding:3px 9px;border-radius:12px;background:var(--surface3);color:var(--text3);display:inline-flex;align-items:center;gap:4px;cursor:default}
+.tag .tag-x{cursor:pointer;color:var(--text4);font-size:12px;line-height:1}
+.tag.tag-blue{background:var(--blue-bg);color:var(--blue)}
+.tag.tag-green{background:var(--green-bg);color:var(--green)}
+.tag.tag-gold{background:var(--gold-bg);color:var(--gold)}
+.tag.tag-purple{background:var(--purple-bg);color:var(--purple)}
+.tag.tag-red{background:var(--red-bg);color:var(--red)}
+
+/* ── LISTS ── */
+.list-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border:1px solid transparent;border-radius:var(--r-sm);transition:all .13s;cursor:default}
+.list-row:hover{background:var(--surface3);border-color:var(--border)}
+.list-row.selected{border-color:var(--blue);background:var(--blue-bg)}
+.list-row-main{flex:1;min-width:0}
+.list-row-name{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-row-sub{font-size:11px;color:var(--text3);margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.list-row-actions{display:flex;gap:4px;flex-shrink:0}
+
+/* product row */
+.prod-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--surface2);border:1px solid transparent;border-radius:var(--r-sm);transition:all .13s}
+.prod-row:hover{border-color:var(--border)}
+.prod-row.no-stock{opacity:.4}
+.prod-main{flex:1;min-width:0}
+.prod-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prod-sub{font-size:11px;color:var(--text3);margin-top:2px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.price-pill{font-size:11px;font-weight:600;padding:1px 7px;border-radius:5px}
+.pp-may{background:var(--gold-bg);color:var(--gold)}
+.pp-min{background:var(--green-bg);color:var(--green)}
+.pp-s{background:var(--blue-bg);color:var(--blue)}
+.stock-on{font-size:10px;font-weight:600;color:var(--green)}
+.stock-off{font-size:10px;font-weight:600;color:var(--red)}
+
+/* edit form inline */
+.edit-form{display:none;padding:12px;background:var(--surface);border:1px solid var(--blue);border-radius:var(--r-sm);margin-top:4px}
+.edit-form.open{display:block}
+
+/* add form */
+.add-form{background:var(--surface3);border:1px dashed var(--border2);border-radius:var(--r-sm);padding:13px;display:none}
+.add-form.open{display:block}
+.add-form-title{font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
+
+/* ── GRID CARDS (lists overview) ── */
+.grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.list-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-sm);padding:16px;cursor:pointer;transition:all .15s;position:relative}
+.list-card:hover{box-shadow:var(--sh);border-color:var(--border2);transform:translateY(-1px)}
+.list-card.active-list{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-ring)}
+.list-card-emoji{font-size:28px;margin-bottom:8px}
+.list-card-name{font-size:14px;font-weight:600;margin-bottom:4px}
+.list-card-sub{font-size:12px;color:var(--text3)}
+.list-card-actions{position:absolute;top:10px;right:10px;display:flex;gap:4px;opacity:0;transition:opacity .13s}
+.list-card:hover .list-card-actions{opacity:1}
+
+/* ── TEMPLATE GRID ── */
+.tmpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.tmpl-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:12px 10px;cursor:pointer;text-align:center;transition:all .13s}
+.tmpl-card:hover{border-color:var(--border2);box-shadow:var(--sh-sm)}
+.tmpl-card.active{border-color:var(--blue);background:var(--blue-bg)}
+.tmpl-card .t-emoji{font-size:24px;display:block;margin-bottom:5px}
+.tmpl-card .t-name{font-size:11px;font-weight:600;color:var(--text2)}
+.tmpl-card.active .t-name{color:var(--blue)}
+.tmpl-card .t-type{font-size:10px;color:var(--text4);margin-top:2px}
+
+/* ── MESSAGES SAVED ── */
+.msg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-sm);padding:14px 16px;margin-bottom:10px}
+.msg-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.msg-card-title{font-size:13px;font-weight:600}
+.msg-card-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.msg-card-preview{font-size:12px;color:var(--text3);line-height:1.5;white-space:pre-wrap;background:var(--surface2);border-radius:var(--r-xs);padding:8px 10px;max-height:90px;overflow:hidden;position:relative}
+.msg-card-preview::after{content:'';position:absolute;bottom:0;left:0;right:0;height:24px;background:linear-gradient(transparent,var(--surface2))}
+.msg-card-actions{display:flex;gap:6px;margin-top:10px}
+
+/* ── COPY BUILDER ── */
+.copy-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:580px){.copy-grid{grid-template-columns:1fr}}
+.copy-side-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 10px;border-radius:var(--r-xs);text-align:center;margin-bottom:8px}
+.copy-side-label.min{background:var(--green-bg);color:var(--green)}
+.copy-side-label.may{background:var(--gold-bg);color:var(--gold)}
+
+.cat-check{display:flex;align-items:center;gap:9px;padding:8px 10px;background:var(--surface2);border:1px solid transparent;border-radius:var(--r-sm);cursor:pointer;transition:all .13s;user-select:none;margin-bottom:4px}
+.cat-check:hover{border-color:var(--border)}
+.cat-check.on{border-color:var(--blue);background:var(--blue-bg)}
+.cat-check.on.gold{border-color:var(--gold);background:var(--gold-bg)}
+.check-box{width:17px;height:17px;border-radius:5px;border:1.5px solid var(--border2);background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .13s}
+.cat-check.on .check-box{background:var(--blue);border-color:var(--blue);color:#fff}
+.cat-check.on.gold .check-box{background:var(--gold);border-color:var(--gold)}
+.check-label{font-size:12px;font-weight:500;flex:1}
+.check-count{font-size:11px;color:var(--text4)}
+
+/* ── SEGMENT CONTROL ── */
+.seg{display:flex;background:var(--surface3);border-radius:var(--r-sm);padding:3px;gap:2px}
+.seg-btn{flex:1;padding:6px 10px;border-radius:var(--r-xs);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--text3);transition:all .14s;text-align:center}
+.seg-btn.active{background:#fff;color:var(--text);box-shadow:var(--sh-sm)}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:16px 0}
+.divider-label{display:flex;align-items:center;gap:12px;margin:20px 0}
+.divider-label::before,.divider-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.divider-label span{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text4);white-space:nowrap}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--r);box-shadow:0 8px 40px rgba(0,0,0,.15);width:100%;max-width:520px;max-height:85vh;overflow-y:auto}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:15px;font-weight:600}
+.modal-close{background:var(--surface2);border:1px solid var(--border);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--text3);flex-shrink:0}
+.modal-close:hover{background:var(--surface3)}
+.modal-body{padding:20px}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--text);color:#fff;border-radius:20px;padding:10px 20px;font-size:13px;font-weight:500;z-index:9999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:8px;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.green{background:var(--green)}
+.toast.gold{background:var(--gold)}
+.toast.red{background:var(--red)}
+.toast.blue{background:var(--blue)}
+
+/* ── PREVIEW BOX ── */
+.preview-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;font-size:12px;line-height:1.6;white-space:pre-wrap;color:var(--text2);min-height:120px;max-height:340px;overflow-y:auto;font-family:'Inter',sans-serif}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:32px;color:var(--text4);font-size:13px}
+.empty-icon{font-size:32px;margin-bottom:8px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:580px){
+  .eg3{grid-template-columns:1fr 1fr}
+  .grid-cards{grid-template-columns:1fr}
+  .topbar{padding:0 12px}
+  .nav{padding:0 8px}
+  .nav-tab{padding:10px 10px;font-size:12px}
+}
+
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div id="loginScreen" style="
+  position:fixed;inset:0;z-index:1000;
+  background:#f5f5f7;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;font-family:'Inter',sans-serif;
+">
+  <img src="data:image/jpeg;base64,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" style="width:80px;height:80px;border-radius:18px;margin-bottom:16px;box-shadow:0 4px 20px rgba(0,0,0,.15);">
+  <div style="font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:4px;">iPhone <span style="color:#0071e3;">Club</span></div>
+  <div style="font-size:12px;color:#6e6e73;margin-bottom:32px;letter-spacing:.5px;text-transform:uppercase;">Panel de precios</div>
+
+  <div style="width:100%;max-width:320px;background:#fff;border:1px solid #d2d2d7;border-radius:14px;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.05);">
+    <div id="loginError" style="display:none;background:#fff2f2;border:1px solid #ffcdd2;border-radius:8px;padding:10px 12px;font-size:12px;color:#c62828;margin-bottom:14px;"></div>
+    <div style="display:flex;flex-direction:column;gap:3px;margin-bottom:12px;">
+      <label style="font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:#6e6e73;">Email</label>
+      <input id="loginEmail" type="email" placeholder="tu@email.com" autocomplete="email"
+        style="background:#f5f5f7;border:1px solid #d2d2d7;border-radius:8px;color:#1d1d1f;font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;outline:none;width:100%;"
+        onfocus="this.style.borderColor='#0071e3';this.style.boxShadow='0 0 0 3px rgba(0,113,227,.12)'"
+        onblur="this.style.borderColor='#d2d2d7';this.style.boxShadow='none'">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:3px;margin-bottom:20px;">
+      <label style="font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:#6e6e73;">Contraseña</label>
+      <input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password"
+        style="background:#f5f5f7;border:1px solid #d2d2d7;border-radius:8px;color:#1d1d1f;font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;outline:none;width:100%;"
+        onfocus="this.style.borderColor='#0071e3';this.style.boxShadow='0 0 0 3px rgba(0,113,227,.12)'"
+        onblur="this.style.borderColor='#d2d2d7';this.style.boxShadow='none'"
+        onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+    <button onclick="doLogin()" id="loginBtn"
+      style="width:100%;background:#0071e3;color:#fff;border:none;border-radius:10px;padding:12px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .14s;">
+      Iniciar sesión
+    </button>
+  </div>
+  <div style="font-size:11px;color:#aeaeb2;margin-top:20px;">iPhone Club © 2025</div>
+</div>
+
+<!-- ══ ADMIN PANEL — USER MANAGEMENT ══ -->
+<div class="modal-overlay" id="modalUsers">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">👥 Gestión de usuarios</div>
+      <div class="modal-close" onclick="closeModal('modalUsers')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:14px;">
+        <div style="font-size:12px;color:#6e6e73;margin-bottom:10px;">Crear nuevo usuario</div>
+        <div class="eg eg1" style="margin-bottom:8px;">
+          <div class="f"><label>Email</label><input id="newUserEmail" type="email" placeholder="usuario@email.com"></div>
+        </div>
+        <div class="eg eg2" style="margin-bottom:8px;">
+          <div class="f"><label>Contraseña</label><input id="newUserPass" type="password" placeholder="mínimo 6 caracteres"></div>
+          <div class="f"><label>Nombre</label><input id="newUserName" placeholder="Nombre"></div>
+        </div>
+        <div class="eg eg1" style="margin-bottom:10px;">
+          <div class="f"><label>Rol</label>
+            <select id="newUserRole">
+              <option value="user">Usuario — solo mensajes propios</option>
+              <option value="admin">Admin — acceso completo</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="createUser()" style="width:100%;justify-content:center;">Crear usuario</button>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:12px;color:#6e6e73;margin-bottom:10px;">Usuarios registrados</div>
+      <div id="usersList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+
+<div class="shell">
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="logo">
+    <img id="logoImg" alt="iPhone Club">
+    <div class="logo-name">iPhone <span>Club</span></div>
+  </div>
+  <div class="topbar-right" style="display:flex;align-items:center;gap:6px;">
+    <span id="userBadge" style="display:none;font-size:12px;font-weight:500;color:#6e6e73;padding:4px 10px;background:#f5f5f7;border:1px solid #d2d2d7;border-radius:20px;"></span>
+    <button id="adminBtn" class="btn btn-ghost btn-sm" style="display:none;" onclick="openUsersModal()">👥</button>
+    <button class="btn btn-ghost btn-sm" onclick="exportAll()">⬇</button>
+    <button class="btn btn-ghost btn-sm" onclick="doLogout()">Salir</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-tab active" data-page="generate" onclick="goPage('generate')">📤 Generar</button>
+  <button class="nav-tab" data-page="lists" onclick="goPage('lists')">📋 Mis Listas</button>
+  <button class="nav-tab" data-page="templates" onclick="goPage('templates')">🎨 Plantillas</button>
+  <button class="nav-tab" data-page="saved" onclick="goPage('saved')">💬 Guardados</button>
+</nav>
+
+<div class="main">
+
+<!-- ══════════ PAGE: GENERATE ══════════ -->
+<div class="page active" id="page-generate">
+
+  <div class="section">
+    <div class="section-label">1 — Elegí una lista</div>
+    <div id="genListPicker" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">2 — Elegí una plantilla</div>
+    <div class="tmpl-grid" id="genTmplPicker"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">3 — Tipo de mensaje</div>
+    <div class="seg" id="genTypeSeg" style="max-width:280px;">
+      <button class="seg-btn active" onclick="setGenType('min',this)">🟢 Minorista</button>
+      <button class="seg-btn" onclick="setGenType('may',this)">🟡 Mayorista</button>
+      <button class="seg-btn" onclick="setGenType('free',this)">✍️ Libre</button>
+    </div>
+  </div>
+
+  <div id="genCatSelector" class="section" style="display:none;">
+    <div class="section-label">3b — Categorías a incluir</div>
+    <div class="copy-grid">
+      <div>
+        <div class="copy-side-label min" id="genSelLabel">Seleccioná categorías</div>
+        <div id="genCatChecks"></div>
+        <div style="display:flex;gap:6px;margin-top:6px;">
+          <button class="btn btn-ghost btn-xs" onclick="genSelectAll()">Todos</button>
+          <button class="btn btn-ghost btn-xs" onclick="genSelectNone()">Ninguno</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">4 — Vista previa</div>
+    <div class="card">
+      <div class="card-body" style="padding:12px;">
+        <div class="preview-box" id="genPreview">Elegí una lista y plantilla para ver la vista previa.</div>
+      </div>
+      <div class="card-footer">
+        <button class="btn btn-ghost btn-sm" onclick="saveCurrentMsg()">💾 Guardar mensaje</button>
+        <button class="btn btn-green btn-sm" id="genCopyBtn" onclick="copyGenMessage()">📋 Copiar</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════ PAGE: LISTS ══════════ -->
+<div class="page" id="page-lists">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <div id="listDetailBreadcrumb" style="font-size:13px;color:var(--text3);"></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ghost btn-sm" id="backToListsBtn" onclick="showListsGrid()" style="display:none;">← Volver</button>
+      <button class="btn btn-primary btn-sm" onclick="openNewListModal()">+ Nueva lista</button>
+    </div>
+  </div>
+
+  <!-- Lists grid -->
+  <div id="listsGrid" class="grid-cards"></div>
+
+  <!-- List detail -->
+  <div id="listDetail" style="display:none;">
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-header">
+        <div class="card-title" id="detailListTitle"></div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-ghost btn-sm" onclick="openEditListModal()">✏️ Editar lista</button>
+          <button class="btn btn-ghost btn-sm" id="addProdBtn" onclick="openAddProd()">+ Producto</button>
+        </div>
+      </div>
+      <div class="card-body" style="padding:10px 14px;">
+        <div id="detailProdList" class="prod-list" style="display:flex;flex-direction:column;gap:4px;"></div>
+        <div class="add-form" id="addProdForm" style="margin-top:8px;"></div>
+      </div>
+    </div>
+
+    <!-- List conditions -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">💳 Condiciones de pago</div>
+        <button class="btn btn-ghost btn-sm" onclick="addListCond()">+ Agregar</button>
+      </div>
+      <div class="card-body">
+        <div id="detailCondGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;"></div>
+      </div>
+    </div>
+
+    <!-- Volume discounts (optional) -->
+    <div class="card" id="discountCard" style="margin-top:14px;display:none;">
+      <div class="card-header"><div class="card-title">💰 Descuentos por volumen</div></div>
+      <div class="card-body" id="discountBody"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════ PAGE: TEMPLATES ══════════ -->
+<div class="page" id="page-templates">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <div style="font-size:13px;color:var(--text3);">Creá y editá plantillas de mensajes</div>
+    <button class="btn btn-primary btn-sm" onclick="openNewTmplModal()">+ Nueva plantilla</button>
+  </div>
+  <div id="tmplList"></div>
+</div>
+
+<!-- ══════════ PAGE: SAVED ══════════ -->
+<div class="page" id="page-saved">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <div style="font-size:13px;color:var(--text3);">Mensajes guardados para reusar</div>
+    <button class="btn btn-primary btn-sm" onclick="openNewSavedModal()">+ Guardar mensaje</button>
+  </div>
+  <div id="tagFilter" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"></div>
+  <div id="savedList"></div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- ══ MODALS ══ -->
+
+<!-- New/Edit List -->
+<div class="modal-overlay" id="modalList">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalListTitle">Nueva lista</div>
+      <div class="modal-close" onclick="closeModal('modalList')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="eg eg2" style="margin-bottom:10px;">
+        <div class="f"><label>Emoji</label><input id="listEmoji" placeholder="📋" style="max-width:70px;"></div>
+        <div class="f"><label>Nombre de la lista</label><input id="listName" placeholder="Ej: Lista Verano"></div>
+      </div>
+      <div class="eg eg1" style="margin-bottom:10px;">
+        <div class="f"><label>Descripción (opcional)</label><input id="listDesc" placeholder="Ej: Productos de temporada"></div>
+      </div>
+      <div class="eg eg2" style="margin-bottom:10px;">
+        <div class="f"><label>Modo de precios</label>
+          <select id="listPriceMode">
+            <option value="usd_dual">USD — Mayorista + Minorista (+$20)</option>
+            <option value="usd_single">USD — Precio único</option>
+            <option value="ars_dual">ARS — Solo accesorio / Con celular</option>
+            <option value="ars_single">ARS — Precio único</option>
+          </select>
+        </div>
+        <div class="f"><label>Color del badge</label>
+          <select id="listColor">
+            <option value="blue">Azul</option>
+            <option value="green">Verde</option>
+            <option value="gold">Dorado</option>
+            <option value="purple">Violeta</option>
+            <option value="red">Rojo</option>
+            <option value="gray">Gris</option>
+          </select>
+        </div>
+      </div>
+      <div class="eg eg1" style="margin-bottom:10px;">
+        <div class="f" id="discountToggleField">
+          <label>Descuentos por volumen</label>
+          <select id="listHasDiscount">
+            <option value="0">No</option>
+            <option value="1">Sí — configuro después</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modalList')">Cancelar</button>
+      <button class="btn btn-primary btn-sm" id="saveListBtn" onclick="saveListModal()">Crear lista</button>
+    </div>
+  </div>
+</div>
+
+<!-- New/Edit Template -->
+<div class="modal-overlay" id="modalTmpl">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTmplTitle">Nueva plantilla</div>
+      <div class="modal-close" onclick="closeModal('modalTmpl')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="eg eg2" style="margin-bottom:10px;">
+        <div class="f"><label>Emoji</label><input id="tmplEmoji" placeholder="🎨"></div>
+        <div class="f"><label>Nombre</label><input id="tmplName" placeholder="Ej: Promo verano"></div>
+      </div>
+      <div class="eg eg1" style="margin-bottom:10px;">
+        <div class="f"><label>Línea decorativa (arriba y abajo)</label><input id="tmplLine" placeholder="☀️ ─────────────────── ☀️"></div>
+      </div>
+      <div class="eg eg1" style="margin-bottom:10px;">
+        <div class="f"><label>Título del mensaje <span style="font-weight:400;text-transform:none;letter-spacing:0;">— usá *negrita* para WhatsApp</span></label><input id="tmplTitle" placeholder="*¡LISTA DE VERANO!*"></div>
+      </div>
+      <div class="eg eg1" style="margin-bottom:10px;">
+        <div class="f"><label>Subtítulo / descripción <span style="font-weight:400;text-transform:none;letter-spacing:0;">— variables: {{fecha}}, {{lista}}</span></label><input id="tmplSubtitle" placeholder="_Precios actualizados al {{fecha}}_"></div>
+      </div>
+      <div class="eg eg1" style="margin-bottom:10px;">
+        <div class="f"><label>Símbolo de bullet por producto</label><input id="tmplBullet" placeholder="▸" style="max-width:80px;"></div>
+      </div>
+      <div class="eg eg1" style="margin-bottom:10px;">
+        <div class="f"><label>Frase de cierre</label><input id="tmplClose" placeholder="Consultanos por disponibilidad 📲"></div>
+      </div>
+      <div class="eg eg1">
+        <div class="f"><label>Pie adicional (opcional)</label><textarea id="tmplFooter" placeholder="Texto extra al final del mensaje..."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modalTmpl')">Cancelar</button>
+      <button class="btn btn-primary btn-sm" id="saveTmplBtn" onclick="saveTmplModal()">Guardar plantilla</button>
+    </div>
+  </div>
+</div>
+
+<!-- Save Message -->
+<div class="modal-overlay" id="modalSaveMsg">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Guardar mensaje</div>
+      <div class="modal-close" onclick="closeModal('modalSaveMsg')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="eg eg1" style="margin-bottom:10px;">
+        <div class="f"><label>Nombre del mensaje</label><input id="saveMsgName" placeholder="Ej: Lista mayorista semana 14"></div>
+      </div>
+      <div class="eg eg1" style="margin-bottom:10px;">
+        <div class="f"><label>Etiquetas (Enter para agregar)</label>
+          <input id="saveMsgTagInput" placeholder="mayorista, promo, cliente..." onkeydown="addTagOnEnter(event)">
+          <div id="saveMsgTags" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;"></div>
+        </div>
+      </div>
+      <div class="eg eg1">
+        <div class="f"><label>Contenido</label><textarea id="saveMsgContent" style="min-height:140px;"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modalSaveMsg')">Cancelar</button>
+      <button class="btn btn-primary btn-sm" onclick="confirmSaveMsg()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+</div><!-- /shell -->
+<div class="toast" id="toast"></div>
+
+<script type="module">
+
+// ════════════════════════════════════════════════════════
+// FIREBASE
+// ════════════════════════════════════════════════════════
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, orderBy, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+const firebaseApp = initializeApp({
+    apiKey: "AIzaSyCBsL8sWUtxbG-KIc3ZzObUgKZTqhEMnf0",
+    authDomain: "iphone-club-acf61.firebaseapp.com",
+    projectId: "iphone-club-acf61",
+    storageBucket: "iphone-club-acf61.firebasestorage.app",
+    messagingSenderId: "989584681373",
+    appId: "1:989584681373:web:2813015fb6f624b8c4f0e2",
+    measurementId: "G-YVMLS6G0LJ"
+  });
+const auth = getAuth(firebaseApp);
+const db_fire = getFirestore(firebaseApp);
+
+let currentUser = null;
+let currentUserRole = 'user';
+let isAdmin = false;
+
+// ── AUTH STATE ──
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    currentUser = user;
+    // Get role from Firestore
+    try {
+      const snap = await getDoc(doc(db_fire,'users',user.uid));
+      if(snap.exists()){
+        currentUserRole = snap.data().role||'user';
+        isAdmin = currentUserRole==='admin';
+      }
+    } catch(e){ console.log('Role fetch error:',e); }
+    hideLogin();
+    updateUserUI();
+    await loadFromFirebase();
+    renderGenerate();
+  } else {
+    currentUser = null;
+    isAdmin = false;
+    showLogin();
+  }
+});
+
+function showLogin(){ 
+  const el = document.getElementById('loginScreen');
+  if(el) el.style.display='flex';
+}
+function hideLogin(){ 
+  const el = document.getElementById('loginScreen');
+  if(el) el.style.display='none';
+}
+
+function updateUserUI(){
+  // Show user info in topbar
+  const el = document.getElementById('userBadge');
+  if(el){
+    el.textContent = currentUser?.email?.split('@')[0]||'';
+    el.style.display='inline-flex';
+  }
+  // Show admin button if admin
+  const adminBtn = document.getElementById('adminBtn');
+  if(adminBtn) adminBtn.style.display = isAdmin?'inline-flex':'none';
+}
+
+async function doLogin(){
+  const email = document.getElementById('loginEmail')?.value?.trim();
+  const pass = document.getElementById('loginPass')?.value;
+  const btn = document.getElementById('loginBtn');
+  const errEl = document.getElementById('loginError');
+  if(!email||!pass){ showLoginError('Completá email y contraseña.'); return; }
+  btn.textContent='Entrando...'; btn.disabled=true;
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e){
+    btn.textContent='Iniciar sesión'; btn.disabled=false;
+    const msgs = {
+      'auth/invalid-credential':'Email o contraseña incorrectos.',
+      'auth/user-not-found':'Usuario no encontrado.',
+      'auth/wrong-password':'Contraseña incorrecta.',
+      'auth/too-many-requests':'Demasiados intentos. Esperá unos minutos.',
+    };
+    showLoginError(msgs[e.code]||'Error al iniciar sesión.');
+  }
+}
+function showLoginError(msg){
+  const el=document.getElementById('loginError');
+  if(el){ el.textContent=msg; el.style.display='block'; }
+}
+
+async function doLogout(){
+  await signOut(auth);
+  toast('Sesión cerrada');
+}
+
+// ── FIREBASE DATA ──
+async function loadFromFirebase(){
+  if(!currentUser) return;
+  try {
+    // Load shared catalog (lists + templates) — all users read same
+    const catalogSnap = await getDoc(doc(db_fire,'catalog','main'));
+    if(catalogSnap.exists()){
+      const d = catalogSnap.data();
+      if(d.lists) DB.lists = d.lists;
+      if(d.templates) DB.templates = d.templates;
+    }
+    // Load user's own saved messages
+    const savedSnap = await getDocs(
+      query(collection(db_fire,'saved'), where('uid','==',currentUser.uid), orderBy('ts','desc'))
+    );
+    DB.saved = savedSnap.docs.map(d=>({id:d.id,...d.data()}));
+    // Persist locally as cache
+    saveLocal();
+  } catch(e){ 
+    console.log('Firebase load error, using local cache:', e);
+    loadLocal();
+  }
+}
+
+async function saveToFirebase(){
+  if(!currentUser) return;
+  try {
+    if(isAdmin){
+      // Admin saves shared catalog
+      await setDoc(doc(db_fire,'catalog','main'), {
+        lists: DB.lists,
+        templates: DB.templates,
+        updatedAt: new Date().toISOString(),
+        updatedBy: currentUser.email
+      });
+    }
+    saveLocal();
+  } catch(e){ console.log('Firebase save error:', e); saveLocal(); }
+}
+
+async function saveUserMessage(msg){
+  if(!currentUser) return;
+  try {
+    const ref = doc(collection(db_fire,'saved'));
+    await setDoc(ref, {...msg, uid: currentUser.uid, userEmail: currentUser.email});
+    return ref.id;
+  } catch(e){ console.log('Save msg error:', e); }
+}
+
+async function deleteUserMessage(id){
+  if(!currentUser) return;
+  try {
+    await deleteDoc(doc(db_fire,'saved',id));
+  } catch(e){ console.log('Delete msg error:', e); }
+}
+
+// Override save to use Firebase
+const originalSave = typeof save !== 'undefined' ? save : ()=>{};
+function save(){
+  saveToFirebase();
+}
+function saveLocal(){
+  localStorage.setItem('ic_v5', JSON.stringify(DB));
+}
+function loadLocal(){
+  try{
+    const r = localStorage.getItem('ic_v5');
+    if(r){ const d=JSON.parse(r); if(d.lists) DB.lists=d.lists; if(d.templates) DB.templates=d.templates; if(d.saved) DB.saved=d.saved; }
+  }catch{}
+}
+
+// ── USER MANAGEMENT (admin only) ──
+async function openUsersModal(){
+  if(!isAdmin){ toast('Solo admins pueden gestionar usuarios','red'); return; }
+  openModal('modalUsers');
+  loadUsersList();
+}
+
+async function loadUsersList(){
+  const el = document.getElementById('usersList'); if(!el) return;
+  el.innerHTML='<div style="color:#aeaeb2;font-size:12px;">Cargando...</div>';
+  try {
+    const snap = await getDocs(collection(db_fire,'users'));
+    if(snap.empty){ el.innerHTML='<div style="color:#aeaeb2;font-size:12px;">Sin usuarios registrados.</div>'; return; }
+    el.innerHTML = snap.docs.map(d=>{
+      const u=d.data();
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f5f5f7;gap:10px;">
+        <div>
+          <div style="font-size:13px;font-weight:500;">${u.name||u.email}</div>
+          <div style="font-size:11px;color:#6e6e73;">${u.email} · <span class="badge badge-${u.role==='admin'?'blue':'gray'}">${u.role||'user'}</span></div>
+        </div>
+        <button class="btn btn-danger btn-xs" onclick="deleteUserDoc('${d.id}')">🗑</button>
+      </div>`;
+    }).join('');
+  } catch(e){ el.innerHTML='<div style="color:#ff3b30;font-size:12px;">Error al cargar usuarios.</div>'; }
+}
+
+async function createUser(){
+  if(!isAdmin) return;
+  const email = document.getElementById('newUserEmail')?.value?.trim();
+  const pass = document.getElementById('newUserPass')?.value;
+  const name = document.getElementById('newUserName')?.value?.trim();
+  const role = document.getElementById('newUserRole')?.value;
+  if(!email||!pass||!name){ toast('Completá todos los campos','red'); return; }
+  if(pass.length<6){ toast('La contraseña debe tener al menos 6 caracteres','red'); return; }
+  try {
+    // Create auth user (this signs in as that user temporarily — use admin SDK in production)
+    // For now we create via client SDK
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await setDoc(doc(db_fire,'users',cred.user.uid), { email, name, role, createdAt: new Date().toISOString() });
+    // Sign back in as admin
+    toast('✅ Usuario creado — el admin deberá volver a iniciar sesión','green');
+    document.getElementById('newUserEmail').value='';
+    document.getElementById('newUserPass').value='';
+    document.getElementById('newUserName').value='';
+    loadUsersList();
+  } catch(e){
+    const msgs={'auth/email-already-in-use':'Ese email ya está registrado.','auth/weak-password':'Contraseña muy débil.'};
+    toast(msgs[e.code]||'Error al crear usuario','red');
+  }
+}
+
+async function deleteUserDoc(uid){
+  if(!confirm('¿Eliminar este usuario?')) return;
+  try {
+    await deleteDoc(doc(db_fire,'users',uid));
+    loadUsersList();
+    toast('🗑 Usuario eliminado');
+  } catch(e){ toast('Error al eliminar','red'); }
+}
+
+// ── OVERRIDE confirmSaveMsg to use Firebase ──
+const _origConfirmSaveMsg = typeof confirmSaveMsg !== 'undefined' ? confirmSaveMsg : null;
+
+
+// ════════════════════════════════════════════════════════
+// APP CODE
+// ════════════════════════════════════════════════════════
+
+// ════════════════════════════════════════════════════════
+// LOGO
+// ════════════════════════════════════════════════════════
+const LOGO_B64 = '/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAQDAwMDAgQDAwMEBAQFBgoGBgUFBgwICQcKDgwPDg4MDQ0PERYTDxAVEQ0NExoTFRcYGRkZDxIbHRsYHRYYGRj/2wBDAQQEBAYFBgsGBgsYEA0QGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBgYGBj/wAARCABgAGADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDxn9pX9pDxZ8WPiJqmj6RrV5Y+CrK4e3srC2kMS3YQlTPNjBcsQSFPCqQMZyT8+iPvVsRU9YKqxJTEXtS+VV4QVraP4W1jXdzadZu0EbbZLl/kijPoWPGf9kZPtRYDnPLpfKPcV2l5oukeHU/4mEM2oTjqo3Ig/UH86xW8Y2sEnl2vhfS0A7vCjH8ypP60thmL5R9KTy/atpfF9tcSbbnwzpjA90hRT+iD+dbVjoel+IVxYQy2E56Kcuh/Un8qAscX5dIYfaum1nwprOg7ZNQsnW3kbbHcp80Tn0DDgN/snB9qyDD7U7CM/wAvHavoD9mv9o7xb8J/iJpekavrV5feCr24S3vdPupGlW0DkL58OeUKkglRwyggjOCPDTD7Unk46UWGWVi9qlWL2qQKM8V3Hws8Ct49+IdtpEwnXToVN3qEkA/eCBSAUT/ppIzJEn+1IvpVCOt+C/wKv/iBdQavqttL/ZTs32a2VjG17sOHdnHMdup+VnHzM3yJzuK/Vl78LdE8OeGlTy7eNII/LWQRiKOIH+CJBwik9hlj/EWPNeu6TougfDH4ZXOra69lpdtZWguL+VOIbWKJMLDH/wBM41+RR1Y5b7zmvjr4ifHy/wDEA/4SJ4pLKxmLf2NpRba/lZx50pHQnuRz/CuME104TCyxM+VOyWrb2SOfE4mNCKbV29Elu32/rbcreJ/hh4QuLiW98UeIG020U8wWqq0x/wB5mOyP6Ek+1ca1l+zTpDmP/hGLnVnHBmu9RuJCfwjCr+VeX634i1bxBem41G7eTH3UHCIPRVHArJK7utdrq4Kh7sKfO+8m19yVvxbORUMZW96pV5PKKT+9yTv8kj2ZLT9mnVXEZ8MXOlMektpqNxGR+EgZfzrtfC/w08GwTR3vhfxA2o2rH5YLpUEw9lZTsk+gIPtXzKFINa2ieIdV0C9Fxp128JP3k6q49GU8MPrSVbBVvdnT5POLb/B3/ND9hi6WsKvP5SSX3OKVvmmfeOn/AAy0PxJ4bZCkEizJ5bSeWJFcDqksZ4dfVW5HYqea+VvjR8CdQ8AXVxq+l2sn9loVNzbbjJ9kDHasiOeXt2b5Qx+ZG+R+SrN33w++O+paCB4kt4XvLe32/wBsaTuLM8OcebGT1I7E8jocgg19i6jpXh/4p/C201fQZLPU7a+tTcafNKMxXCSLh4ZB/ckXMbjsefvICOTFYWWHkk3dPVNbNHVhsTGvFtKzWjT3T/r7z8kzFjtTfL9q774peBj4D+IVzpMKznTp1F1p7z/6zyGJGx/+mkbq8T/7UZPeuKCjOK5ToIEcV9o/sX+FoBYnX7mNS91dPdkkf8srXEcI+hnmkf6wL6V8PJcfMOa+2fgB4+0Xwj8NdMhu7uOF20y3wCcfemuZW/WQflQB2f7Yni19VuPDXwqt7lotMuN2ua8yHG62hJ8uI+zMrNj/AGVr4k17VL3X9Yn1NreQQlxEixoSkQxhIwRwMKOB3wTXsvxw8SPr/jjxn4vinMtpNp9lptowPGwMN+Px3fnWt+zHavN4M0rVf7U1BEj+JOkwGxWYC2k3Qk72THLjoDnsOOK9fEf7PgqdOOjn7z++y+W7+Z5lD99i6lR/YtFfcm/vul8j5v2S+csXlSeY/CpsO5voOpprEpIyOpVlOCrDBB9CD0r7it/HFlF8Rf8AhFvHvxS0Dx7rt74/00+GNP04m4m0JU1DMpklMaeX+7AjKZPI4Jya43VvhN8N/i7488YtosevaFrtj8Ql0fUdQur1LiO8S5nkMjxxbQIiMMEGT0XcWyceRzHqWPk7eB3pd/qa+mfCnwh+D/xJ1kv4c0XxNoNronjCDw1qUF9qouDqMMu9BKjbAYZQyAlBkAfXibwp8CPhX8ULWwTwoviLw89l40l8M6jNfX6XTXsEcEs5lQbAIpCItoABAzzuo5hWPnbw7rk2ia9BfQ4cIcPE33ZEPDIfYgkfjX2v+yD4sbRtT8TfCyS4aXSk269oJdslbebHmxD2DMjY92r5v+Lng/4WaN8PbLxJ4G1jTrbVE1RtPudEtPES62Hg8sslz5ojTy3ypVozkcgj33fgz4hl0Pxl4L8YyTGO0t7G8067bPGwsQmfxIr1qH+0YOpBq7h7y/J/15Hm1/3OLp1F9u8X9za+6zXzPTv2zvC8BsP7et4wHtbqO8BA/wCWV1mKdfoJ4on+s7etfGBcc19h/Hr4haL4u+Gmo29rdxyyLplypAOfuy28q/8Aj0X618VtcfMcGvJPSMpZSD1rWvtc1CLRdN8q4kVURoeD2Uggf+PGsTB9K14bF9R8J3AiBL2kqyEf7J4/z9KzGe529n/bn7C1tr0P725tb+5s7thyQUkjlTP/AAB2P4V5X4Y+KfjjwVpaaZ4b1s2NrFqkOtLH5EcmLuFdscmWUngcbeh7ivX/ANl27h1jR/FnwZ1fBj8QwC+0pXOA17CjBoh7yws6j3UV4R4t8N33hfxXeaPeoweFyFYjG9f4W/EYP5jtXrVr18FTmvsXi/R6r9V8jzqNqWKqQf27SXySi/usn8z1/wAC+Gbe18PW/wC0P8RfiFf+GRN4gY6O2l6Wl9eXt8j+dJMI2KxrGj5znIJBGBxnv18G+LbrwZ8TdW8C/F5/E8l5qeg+ILCTRYLeF9Tvby8ZYvPH37S4jkGfLVlGSMjBwPPPC3ir4Z+Of2bdJ+E3xF8WXngu+8O6pcahpWsppkmoW88NxzJDJHGQ6uGyQ3TGB612vgr4r/Ar4Y6R4t0rwdLr01o174aubeW9gczaxLZXxnu5wuNtupTGyNjzj3wPJPSIfDHiX9pL4gfGLRdN8Sa5f6fa+HPF1pY6ld2tlZRjTtQmkNuJpY1ULPNksu5g46+tc94+0D9oD4QaZrFxGut2Pg9PF8upW2seVAkkl6jukVy2zLwl15CkKjBhgEEZ9S0/4v8AwI8LeK/Fmr6V8QdR1V/EnjjSfFLq2hzwJawxXpmljBOS7opbJwM/KFyc44fx58SvhTZ/Cv4tw+EPGeteJtV+JOrw3X9n32myWw0mOO5acs7sSsjHO1SvONuQMEAEeP8Ajj4yfET4lWVrYeL9fF3Z20zXMdrbWkFpEZmGGmZIUUPIQSN7ZPJ9TXp09mdC/YNvdfm/d3F3f21laMeCS8kkzY/4Ai/nXiHhHw1feKfFtno9kjF55AGYDOxf4m/Af0HeveP2pbyDRtF8JfBbR8BPD0Bv9VCHIW9mRQsR94oVRT7sa9Wjehg5zf27RXotW/yXzPOrWq4qnBfYvJ/NOK++7fyPALDWtQk0jUfNuHKsixHJ7Ekkf+O1mGY561oTWT6d4TgEgxJdylwD12jj/P1rJwa8o9I1l01v7tb3hd00nXkkvI2eymUw3KqMny2/iA9VOD+GO9dZH4dH9z9KnTw2c/cxWvKRc2tN8K3Wk61De6ZcNFcWsiXFvdW7YKkYaORD+RB/+vW78WbvSvHU9tfeKLOPR9UuBj+1o0xbmc/eEgH3Fc/N/ssSRwSC7wndyWEMem35xFFn7NcMpYQ5OTG4HJjJ545U8juD6Xb6bpOtWr6fdWsTtLH+8tJsOJF/vKejp/tD8cHiurC4mWHk2ldPRp7NHPiMPGvFJuzWqa3T/r79j5E1fwbquiXv2fULR4y3KOPmSQf3kYcMPcVnDSX/ALpr7Z0fwRommae2ly6SNQ0ljkWkk21ov9xmDKR7Mv40lx8GfhPfOZQuv6ax6xmyEyj6NHLj/wAdFbSo4Sq7wnyeTTf4pP8AJGCrYqlpOnz+cWl96k1b5NnxQNJcn7prT0fwZquuXfkWFo0mBukkPypGv952PCj3NfYlt8GPhPYSCRh4g1IjkRiyEIP1aWbH/jpp2s+CdF1PT10qDSRp+kqcm0jmLvL/AL7AKoHsq/jRGjhKWs58/kk1+Lt+CYOtiqmkKfJ5yaf3KLd/m0eS/Ci+0vwHc3F94Vs49Y1O3G3+1pE/0fzx90Rg/eRD83+0wBPAAGBqPhS71bWp7/VLhprm6le4ubq4bJYnLSSOfzJP/wBavbLnSdK0W2SwtreJGjjzHaQ4QRp/eY9I0/2j+GTxXmPi69fUYZNM087oZMC5uFUqJgDkRoDyIweeeWPJ7AYYnESxEk2rJaJLZI6MPh40ItJ3b1be7fd/1psjxPxO8era88lnGy2UKiC2UjB2D+Ij1Y5P447Vjf2Y/wDd/SvTm8MnPEf6U0+G8fwfpXLynRc9PXw/Kv8Ayyz+FP8A7HmTkwE19A/Ef4Val4Y8S3d5ZWUs+izyGSCeJSwiBOfLfH3SOgJ4Ix71wi6Gshwy1pF3M2jztbQRt89pJ+AzWhbX0dtEImtrpog24RmBmAb+8uOVPupBr0G28MWxYFolP1FbNrotpbYK28f4qK6Ywk1sQ5JPc8/tPH1xZEIIdXulH8E+lz3GP+Boob8w1dRZeOBcwhv+EfumPsk8R/KWFTXXRzvAoWIbfoMVKNTvV4Ez/maxlTdzRSOMvfHP2aIt/wAI/cjHqs8h/KOBjXMXfxBubzKmDVrZP7kGlzQZ+skilvyCn3r1w6pengzOR7k1Xmla4UiVQ2fUZpRpu4OSPDrm/jvITEttdLEzbzGIWUM395s8sfdiTVL7AZG/d2j8+oAr2u40GyuOTbx5PcLWXN4YtlOViA+grWUJJbEpp9TykaJO/S3xTx4clY8xgV6QdFVG4Wu5+HXwt1HxL4htrq8s5YNGhkEk08ilRKAc+WmepPQkcAZrBuxaR//Z';
+document.getElementById('logoImg').src = 'data:image/jpeg;base64,' + LOGO_B64;
+
+// ════════════════════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════════════════════
+function uid(){ return 'id_'+Date.now()+'_'+Math.random().toString(36).slice(2,6) }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+function v(id){ return (document.getElementById(id)?.value||'').trim() }
+function gv(id){ return document.getElementById(id) }
+
+let toastT;
+function toast(msg,type=''){
+  const el=gv('toast');
+  el.textContent=msg; el.className='toast show'+(type?' '+type:'');
+  clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),2800);
+}
+
+function closeModal(id){ gv(id).classList.remove('open') }
+function openModal(id){ gv(id).classList.add('open') }
+
+function fmtARS(n){ return '$'+Number(n||0).toLocaleString('es-AR') }
+function fmtUSD(n){ return 'u$'+Number(n||0).toLocaleString('es-AR') }
+
+// ════════════════════════════════════════════════════════
+// DEFAULT TEMPLATES (12 temas)
+// ════════════════════════════════════════════════════════
+const DEFAULT_TEMPLATES = [
+  {id:'t_default',    builtin:true, emoji:'📱', name:'Estándar',     line:'──────────────────────', title:'*‼️ BUENAS VENTAS ‼️*',         subtitle:'_iPhone Club — Precios al {{fecha}}_',          bullet:'▸', closeMsg:'Consultanos por disponibilidad 📲',       footer:''},
+  {id:'t_fire',       builtin:true, emoji:'🔥', name:'Oferta',       line:'🔥 ─────────────────── 🔥', title:'*¡PRECIOS EN LLAMAS!*',       subtitle:'_Ofertas que no podés dejar pasar_',            bullet:'▸', closeMsg:'Stock limitado — aprovechá hoy mismo ⚡', footer:''},
+  {id:'t_valentine',  builtin:true, emoji:'💝', name:'San Valentín', line:'💝 ─────────────────── 💝', title:'*ESPECIAL SAN VALENTÍN*',     subtitle:'_El mejor regalo para quien más querés_',       bullet:'▸', closeMsg:'Sorprendé a alguien especial 🌹',         footer:''},
+  {id:'t_christmas',  builtin:true, emoji:'🎄', name:'Navidad',      line:'🎄 ─────────────────── 🎄', title:'*¡FELICES FIESTAS!*',         subtitle:'_Lista navideña — Los mejores regalos_',        bullet:'▸', closeMsg:'Cerramos el año con los mejores precios 🎁',footer:''},
+  {id:'t_newyear',    builtin:true, emoji:'✨', name:'Año Nuevo',    line:'✨ ─────────────────── ✨', title:'*¡FELIZ AÑO NUEVO!*',         subtitle:'_Empezá el año con tecnología de punta_',       bullet:'▸', closeMsg:'Que arranque con todo 🥂',               footer:''},
+  {id:'t_autumn',     builtin:true, emoji:'🍂', name:'Otoño',        line:'🍂 ─────────────────── 🍂', title:'*LISTA DE OTOÑO*',            subtitle:'_Precios de temporada_',                        bullet:'▸', closeMsg:'Consultanos por disponibilidad 🍁',       footer:''},
+  {id:'t_cyber',      builtin:true, emoji:'⚡', name:'CyberMonday',  line:'⚡ ─────────────────── ⚡', title:'*CYBER MONDAY*',              subtitle:'_Precios especiales por tiempo limitado_',      bullet:'▸', closeMsg:'Solo por hoy — no lo dejés pasar 💻',    footer:''},
+  {id:'t_blackfriday',builtin:true, emoji:'🖤', name:'Black Friday', line:'▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬',   title:'*🖤 BLACK FRIDAY 🖤*',         subtitle:'_Los precios más bajos del año_',               bullet:'▸', closeMsg:'Ofertas por tiempo limitado 💸',          footer:''},
+  {id:'t_summer',     builtin:true, emoji:'☀️', name:'Verano',       line:'☀️ ─────────────────── ☀️', title:'*LISTA DE VERANO*',           subtitle:'_La mejor tecnología para tu verano_',          bullet:'▸', closeMsg:'Llevate lo mejor para el verano 🏖️',     footer:''},
+  {id:'t_winter',     builtin:true, emoji:'❄️', name:'Invierno',     line:'❄️ ─────────────────── ❄️', title:'*LISTA DE INVIERNO*',         subtitle:'_Precios abrigados para el frío_',              bullet:'▸', closeMsg:'Consultanos por disponibilidad 🌨️',      footer:''},
+  {id:'t_easter',     builtin:true, emoji:'🌷', name:'Pascuas',      line:'🌷 ─────────────────── 🌷', title:'*LISTA DE PASCUAS*',          subtitle:'_El mejor regalo para Pascuas_',                bullet:'▸', closeMsg:'Sorprendé con el mejor regalo 🐣',        footer:''},
+  {id:'t_party',      builtin:true, emoji:'🎉', name:'Fiesta',       line:'🎉 ─────────────────── 🎉', title:'*¡PRECIOS DE FIESTA!*',       subtitle:'_Celebrá con la mejor tecnología_',             bullet:'▸', closeMsg:'No te quedés afuera 🥳',                 footer:''},
+  {id:'t_china',      builtin:true, emoji:'🇨🇳', name:'China',       line:'──────────────────────',   title:'*🇨🇳 LISTADO CHINA 🇨🇳*',    subtitle:'_📅 {{fecha}}_',                                bullet:'▸', closeMsg:'📦 Hacemos envíos a todo el país en el día.',footer:''},
+];
+
+// ════════════════════════════════════════════════════════
+// DEFAULT LISTS
+// ════════════════════════════════════════════════════════
+const DEFAULT_LISTS = [
+  {
+    id:'l_iphone', emoji:'📱', name:'iPhone Club', desc:'Productos Apple y Gaming', color:'blue',
+    priceMode:'usd_dual', hasDiscount:false,
+    minOrder:0, disc1From:0, disc1Pct:0, disc2From:0, disc2Pct:0,
+    conditions:[
+      {id:'lc1',label:'USDT',value:'Descuento 0.5%'},
+      {id:'lc2',label:'Transferencia $AR',value:'Recargo 5%'},
+      {id:'lc3',label:'Billetes',value:'Manchados/cara chica: -10%. No rotos.'},
+      {id:'lc4',label:'Cambio',value:'No tomamos cambio. Consultar.'},
+    ],
+    products:[
+      {id:'p1',emoji:'📱',name:'iPhone 15 128GB',       may:620,  alt:0, stock:true, note:'Blue', battery:'', extra:''},
+      {id:'p2',emoji:'📱',name:'iPhone 16e 128GB',      may:630,  alt:0, stock:true, note:'Black / White', battery:'', extra:''},
+      {id:'p3',emoji:'📱',name:'iPhone 16 128GB',       may:740,  alt:0, stock:true, note:'Black / Teal / Ultramarine', battery:'', extra:''},
+      {id:'p4',emoji:'📱',name:'iPhone 17 256GB',       may:835,  alt:0, stock:false,note:'Ingresando · Orange/Blue/Silver', battery:'', extra:''},
+      {id:'p5',emoji:'📱',name:'iPhone 17 Pro 256GB',   may:1250, alt:0, stock:false,note:'Orange/Blue/Silver', battery:'', extra:''},
+      {id:'p6',emoji:'📱',name:'iPhone 17 Pro Max 256GB',may:1395,alt:0, stock:false,note:'Silver / Blue', battery:'', extra:''},
+      {id:'p7',emoji:'🔄',name:'iPhone 13 128GB',       may:270,  alt:0, stock:true, note:'Blue',    battery:'76', extra:'Usado'},
+      {id:'p8',emoji:'🔄',name:'iPhone 15 128GB',       may:460,  alt:0, stock:true, note:'Black',   battery:'89', extra:'Usado'},
+      {id:'p9',emoji:'🔄',name:'iPhone 15 Pro 128GB',   may:495,  alt:0, stock:true, note:'Blue',    battery:'80', extra:'Usado'},
+      {id:'p10',emoji:'💻',name:'MacBook Air M4 16GB 256GB 13.6"',may:1230,alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'p11',emoji:'💻',name:'MacBook Air M5 16GB 512GB 13.6"',may:1470,alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'p12',emoji:'🎧',name:'AirPods Pro 2',        may:235,  alt:0, stock:true, note:'', battery:'', extra:''},
+      {id:'p13',emoji:'🎮',name:'PS5 Digital 1TB',      may:500,  alt:0, stock:true, note:'', battery:'', extra:''},
+    ]
+  },
+  {
+    id:'l_china', emoji:'🇨🇳', name:'Lista China', desc:'Productos importados', color:'red',
+    priceMode:'ars_single', hasDiscount:true,
+    minOrder:120000, disc1From:600000, disc1Pct:5, disc2From:1400000, disc2Pct:10,
+    conditions:[
+      {id:'cc1',label:'Efectivo',value:'Sin recargo'},
+      {id:'cc2',label:'Transferencia',value:'10% recargo'},
+      {id:'cc3',label:'USDT',value:'Sin recargo'},
+    ],
+    products:[
+      {id:'cp1', emoji:'🔊',name:'JBL Flip 7',                   may:36800,alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp2', emoji:'🔈',name:'JBL Go 4',                     may:9000, alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp3', emoji:'📱',name:'Soporte celular',               may:3250, alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp4', emoji:'🔌',name:'Adaptador Mac',                 may:8100, alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp5', emoji:'🎧',name:'AirPod Max (AAA)',              may:27000,alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp6', emoji:'🎧',name:'AirPod (AAA)',                  may:13000,alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp7', emoji:'🎧',name:'AirPod (AA)',                   may:4400, alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp8', emoji:'⌚',name:'Apple Watch (AAA)',             may:23000,alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp9', emoji:'🔥',name:'Funda Fuego',                   may:3300, alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp10',emoji:'🔋',name:'Cargador rápido auto',          may:3400, alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp11',emoji:'🎤',name:'Micrófono influencer',          may:5400, alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp12',emoji:'💨',name:'Humidificador',                 may:26800,alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp13',emoji:'🌀',name:'Ventilador táctil inalámbrico', may:29800,alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp14',emoji:'🖌️',name:'Aerógrafo',                    may:31000,alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp15',emoji:'🧃',name:'Exprimidor de jugo',            may:30000,alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp16',emoji:'🔫',name:'Pistola de agua',               may:33500,alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp17',emoji:'✈️',name:'Avión grande',                  may:25000,alt:0,stock:true,note:'',battery:'',extra:''},
+      {id:'cp18',emoji:'🛩️',name:'Avión chico',                  may:21000,alt:0,stock:true,note:'',battery:'',extra:''},
+    ]
+  }
+];
+
+// ════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════
+let DB = load();
+
+function load(){
+  try{
+    const r = localStorage.getItem('ic_v5');
+    if(r) return JSON.parse(r);
+  }catch{}
+  return {
+    lists: structuredClone(DEFAULT_LISTS),
+    templates: structuredClone(DEFAULT_TEMPLATES),
+    saved: [],
+    genState: { listId: 'l_iphone', tmplId: 't_default', type:'min', cats:[] }
+  };
+}
+function save(){ localStorage.setItem('ic_v5', JSON.stringify(DB)) }
+
+// ════════════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════════════
+function goPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  gv('page-'+id).classList.add('active');
+  document.querySelector(`[data-page="${id}"]`).classList.add('active');
+  if(id==='generate') renderGenerate();
+  if(id==='lists'){ showListsGrid(); }
+  if(id==='templates') renderTemplates();
+  if(id==='saved') renderSaved();
+}
+
+// ════════════════════════════════════════════════════════
+// GENERATE PAGE
+// ════════════════════════════════════════════════════════
+let genType = 'min';
+let genListId = null;
+let genTmplId = null;
+let genCats = [];
+
+function renderGenerate(){
+  renderGenListPicker();
+  renderGenTmplPicker();
+  renderGenCatSelector();
+  updatePreview();
+}
+
+function renderGenListPicker(){
+  const el = gv('genListPicker'); if(!el) return;
+  el.innerHTML = DB.lists.map(l=>`
+    <button class="btn btn-${l.id===genListId?'primary':'ghost'} btn-sm" onclick="selectGenList('${l.id}')">
+      ${l.emoji} ${l.name}
+    </button>`).join('');
+}
+
+function selectGenList(id){
+  genListId=id;
+  const list = DB.lists.find(l=>l.id===id);
+  genCats = list ? list.products.map(p=>p.id) : [];
+  renderGenListPicker();
+  renderGenCatSelector();
+  updatePreview();
+}
+
+function renderGenTmplPicker(){
+  const el = gv('genTmplPicker'); if(!el) return;
+  el.innerHTML = DB.templates.map(t=>`
+    <div class="tmpl-card ${t.id===genTmplId?'active':''}" onclick="selectGenTmpl('${t.id}')">
+      <span class="t-emoji">${t.emoji}</span>
+      <div class="t-name">${t.name}</div>
+    </div>`).join('');
+}
+
+function selectGenTmpl(id){ genTmplId=id; renderGenTmplPicker(); updatePreview(); }
+
+function setGenType(type,btn){
+  genType=type;
+  document.querySelectorAll('#genTypeSeg .seg-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGenCatSelector();
+  updatePreview();
+}
+
+function renderGenCatSelector(){
+  const sec = gv('genCatSelector');
+  const list = DB.lists.find(l=>l.id===genListId);
+  if(!list || genType==='free'){ if(sec) sec.style.display='none'; return; }
+  if(sec) sec.style.display='block';
+  const label = gv('genSelLabel');
+  if(label) label.textContent = genType==='min' ? '🟢 Minorista — categorías' : '🟡 Mayorista — categorías';
+  const el = gv('genCatChecks'); if(!el) return;
+  // Group products by emoji as proxy for category
+  const byEmoji = {};
+  list.products.filter(p=>p.stock).forEach(p=>{
+    const key = p.emoji+' '+p.extra||'';
+    if(!byEmoji[key]) byEmoji[key]={ids:[],count:0};
+    byEmoji[key].ids.push(p.id);
+    byEmoji[key].count++;
+  });
+  // Just show all products individually, grouped display
+  const inStock = list.products.filter(p=>p.stock);
+  el.innerHTML = inStock.map(p=>{
+    const on = genCats.includes(p.id);
+    const cls = genType==='may' ? 'gold' : '';
+    return `<div class="cat-check ${on?'on':''} ${on&&genType==='may'?'gold':''}" onclick="toggleGenCat('${p.id}',this,'${genType}')">
+      <div class="check-box">${on?'✓':''}</div>
+      <span class="check-label">${p.emoji} ${esc(p.name)}</span>
+    </div>`;
+  }).join('');
+}
+
+function toggleGenCat(id,el,type){
+  const i=genCats.indexOf(id);
+  if(i>=0) genCats.splice(i,1); else genCats.push(id);
+  el.classList.toggle('on');
+  const cls = type==='may'?'gold':'';
+  if(el.classList.contains('on')) el.classList.add(cls||''); else el.classList.remove('gold');
+  const box=el.querySelector('.check-box');
+  box.textContent=el.classList.contains('on')?'✓':'';
+  updatePreview();
+}
+
+function genSelectAll(){
+  const list=DB.lists.find(l=>l.id===genListId);
+  if(!list)return;
+  genCats=list.products.filter(p=>p.stock).map(p=>p.id);
+  renderGenCatSelector(); updatePreview();
+}
+function genSelectNone(){ genCats=[]; renderGenCatSelector(); updatePreview(); }
+
+function buildMessage(listId, tmplId, type){
+  const list = DB.lists.find(l=>l.id===listId);
+  const tmpl = DB.templates.find(t=>t.id===tmplId);
+  if(!list||!tmpl) return 'Elegí una lista y una plantilla.';
+
+  const today = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const sub = (tmpl.subtitle||'').replace('{{fecha}}',today).replace('{{lista}}',list.name);
+
+  if(type==='free') return `${tmpl.line}\n${tmpl.title}\n${sub}\n${tmpl.line}\n\n[Escribí tu mensaje acá]\n\n${tmpl.line}\n_${tmpl.closeMsg}_${tmpl.footer?'\n'+tmpl.footer:''}`;
+
+  const isMay = type==='may';
+  const prods = list.products.filter(p=>p.stock && (genCats.length===0||genCats.includes(p.id)));
+
+  if(!prods.length) return 'Sin productos con stock seleccionados.';
+
+  let msg='';
+
+  if(!isMay){
+    // MINORISTA — con estética de plantilla
+    msg+=`${tmpl.line}\n${tmpl.title}\n${sub}\n${tmpl.line}\n\n`;
+    prods.forEach(p=>{
+      const bat=p.battery?` 🔋${p.battery}%`:'';
+      const nota=p.note?` _(${p.note})_`:'';
+      const extra=p.extra?` [${p.extra}]`:'';
+      let price='';
+      if(list.priceMode==='usd_dual') price=fmtUSD((p.may||0)+20);
+      else if(list.priceMode==='usd_single') price=fmtUSD(p.may||0);
+      else if(list.priceMode==='ars_dual') price=`${fmtARS(p.may)} (c/cel: ${fmtARS(p.alt)})`;
+      else price=fmtARS(p.may||0);
+      msg+=`${tmpl.bullet} ${p.name}${nota}${extra}${bat} — *${price}*\n`;
+    });
+    msg+='\n';
+    if(list.conditions.length){
+      msg+=`💳 *Condiciones de pago*\n`;
+      list.conditions.forEach(c=>{ msg+=`${tmpl.bullet} ${c.label}: ${c.value}\n`; });
+      msg+='\n';
+    }
+    msg+=`${tmpl.line}\n`;
+    msg+=`📍 Entrega inmediata · Consultanos por disponibilidad\n`;
+    msg+=`✅ Garantía oficial Apple en productos nuevos\n`;
+    msg+=`_${tmpl.closeMsg}_`;
+    if(tmpl.footer) msg+=`\n${tmpl.footer}`;
+  } else {
+    // MAYORISTA — sin decoración temática, limpio
+    msg+=`📦 *${list.name.toUpperCase()} — MAYORISTA*\n`;
+    msg+=`📅 ${today}\n\n`;
+    prods.forEach(p=>{
+      const bat=p.battery?` 🔋${p.battery}%`:'';
+      const nota=p.note?` _(${p.note})_`:'';
+      let price='';
+      if(list.priceMode==='usd_dual') price=fmtUSD(p.may||0);
+      else if(list.priceMode==='usd_single') price=fmtUSD(p.may||0);
+      else if(list.priceMode==='ars_dual') price=fmtARS(p.alt||0);
+      else price=fmtARS(p.may||0);
+      msg+=`• ${p.emoji} ${p.name}${nota}${bat} — *${price}*\n`;
+    });
+    msg+='\n';
+    if(list.hasDiscount && list.disc1From){
+      msg+=`💰 *Descuentos por volumen*\n`;
+      msg+=`▸ Más de ${fmtARS(list.disc1From)} → ${list.disc1Pct}% OFF\n`;
+      if(list.disc2From) msg+=`▸ Más de ${fmtARS(list.disc2From)} → ${list.disc2Pct}% OFF\n`;
+      msg+='\n';
+    }
+    if(list.conditions.length){
+      msg+=`💳 *Condiciones de pago*\n`;
+      list.conditions.forEach(c=>{ msg+=`• ${c.label}: ${c.value}\n`; });
+      msg+='\n';
+    }
+    if(list.minOrder) msg+=`📦 Compra mínima: ${fmtARS(list.minOrder)}\n`;
+    msg+=`📍 Oficina disponible para atender a tus clientes\n`;
+    msg+=`📲 Consultanos por disponibilidad y volumen\n`;
+    msg+=`_Cualquier otro modelo consultame._`;
+  }
+
+  return msg;
+}
+
+function updatePreview(){
+  const el=gv('genPreview'); if(!el) return;
+  if(!genListId||!genTmplId){ el.textContent='Elegí una lista y una plantilla para ver la vista previa.'; return; }
+  el.textContent = buildMessage(genListId,genTmplId,genType);
+}
+
+function copyGenMessage(){
+  if(!genListId||!genTmplId){ toast('⚠️ Elegí lista y plantilla','red'); return; }
+  const msg = buildMessage(genListId,genTmplId,genType);
+  navigator.clipboard.writeText(msg).then(()=>{
+    toast('📋 Mensaje copiado!','green');
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=msg;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    toast('📋 Copiado!','green');
+  });
+}
+
+function saveCurrentMsg(){
+  const content = gv('genPreview')?.textContent||'';
+  if(!content||content.startsWith('Elegí')){ toast('⚠️ Generá un mensaje primero','red'); return; }
+  gv('saveMsgContent').value = content;
+  gv('saveMsgName').value = '';
+  gv('saveMsgTags').innerHTML='';
+  pendingTags=[];
+  openModal('modalSaveMsg');
+}
+
+// ════════════════════════════════════════════════════════
+// LISTS PAGE
+// ════════════════════════════════════════════════════════
+let activeListId = null;
+let editingListId = null;
+
+function showListsGrid(){
+  gv('listsGrid').style.display='grid';
+  gv('listDetail').style.display='none';
+  gv('backToListsBtn').style.display='none';
+  gv('listDetailBreadcrumb').textContent='';
+  activeListId=null;
+  renderListsGrid();
+}
+
+function renderListsGrid(){
+  const el=gv('listsGrid'); if(!el) return;
+  el.innerHTML = DB.lists.map(l=>{
+    const n=l.products.filter(p=>p.stock).length;
+    return `<div class="list-card" onclick="openListDetail('${l.id}')">
+      <div class="list-card-actions">
+        <button class="btn btn-icon btn-xs" onclick="event.stopPropagation();openEditListModal('${l.id}')">✏️</button>
+        <button class="btn btn-danger btn-xs" onclick="event.stopPropagation();deleteList('${l.id}')">🗑</button>
+      </div>
+      <div class="list-card-emoji">${l.emoji}</div>
+      <div class="list-card-name">${esc(l.name)}</div>
+      <div class="list-card-sub">${esc(l.desc||'')}</div>
+      <div style="margin-top:10px;display:flex;gap:6px;align-items:center;">
+        <span class="badge badge-${l.color||'gray'}">${n} con stock</span>
+        <span class="badge badge-gray">${l.priceMode}</span>
+      </div>
+    </div>`;
+  }).join('') + `<div class="list-card" style="border-style:dashed;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:120px;" onclick="openNewListModal()">
+    <div style="font-size:28px;margin-bottom:6px;">➕</div>
+    <div style="font-size:13px;font-weight:500;color:var(--text3);">Nueva lista</div>
+  </div>`;
+}
+
+function openListDetail(id){
+  activeListId=id;
+  const list=DB.lists.find(l=>l.id===id); if(!list) return;
+  gv('listsGrid').style.display='none';
+  gv('listDetail').style.display='block';
+  gv('backToListsBtn').style.display='inline-flex';
+  gv('listDetailBreadcrumb').textContent=`${list.emoji} ${list.name}`;
+  gv('detailListTitle').innerHTML=`${list.emoji} <span style="font-weight:700">${esc(list.name)}</span> <span class="badge badge-${list.color||'gray'}">${list.priceMode}</span>`;
+  renderDetailProds();
+  renderDetailConds();
+  renderDetailDiscount();
+}
+
+function renderDetailProds(){
+  const list=DB.lists.find(l=>l.id===activeListId); if(!list) return;
+  const el=gv('detailProdList'); if(!el) return;
+  if(!list.products.length){ el.innerHTML='<div class="empty">Sin productos.</div>'; return; }
+  el.innerHTML=list.products.map(p=>prodRowHTML(p,list.priceMode)).join('');
+}
+
+function prodRowHTML(p,mode){
+  let priceHTML='';
+  if(mode==='usd_dual') priceHTML=`<span class="price-pill pp-min">MIN ${fmtUSD((p.may||0)+20)}</span><span class="price-pill pp-may">MAY ${fmtUSD(p.may||0)}</span>`;
+  else if(mode==='usd_single') priceHTML=`<span class="price-pill pp-s">${fmtUSD(p.may||0)}</span>`;
+  else if(mode==='ars_dual') priceHTML=`<span class="price-pill pp-min">Solo: ${fmtARS(p.may)}</span><span class="price-pill pp-may">+Cel: ${fmtARS(p.alt)}</span>`;
+  else priceHTML=`<span class="price-pill pp-s">${fmtARS(p.may||0)}</span>`;
+  const bat=p.battery?`<span style="font-size:10px;">🔋${p.battery}%</span>`:'';
+  const extra=p.extra?`<span class="badge badge-gray">${esc(p.extra)}</span>`:'';
+
+  return `<div>
+    <div class="prod-row ${p.stock?'':'no-stock'}">
+      <div class="prod-main">
+        <div class="prod-name">${p.emoji||''} ${esc(p.name)}</div>
+        <div class="prod-sub">${priceHTML}${bat}${extra}
+          ${p.stock?'<span class="stock-on">✓ Stock</span>':'<span class="stock-off">✗ Sin stock</span>'}
+          ${p.note?`<span style="color:var(--text4);font-size:11px;">${esc(p.note)}</span>`:''}
+        </div>
+      </div>
+      <div class="prod-actions" style="display:flex;gap:4px;flex-shrink:0;">
+        <button class="btn btn-icon" onclick="toggleProdEdit('${p.id}')">✏️</button>
+        <button class="btn btn-danger" onclick="deleteProd('${activeListId}','${p.id}')">🗑</button>
+      </div>
+    </div>
+    <div class="edit-form" id="pef_${p.id}">${prodEditHTML(p,mode)}</div>
+  </div>`;
+}
+
+function prodEditHTML(p,mode){
+  const isMayOnly = mode==='usd_single'||mode==='ars_single';
+  const isARS = mode.startsWith('ars');
+  return `
+    <div class="eg eg2" style="margin-bottom:8px;">
+      <div class="f"><label>Emoji</label><input id="pe_emo_${p.id}" value="${esc(p.emoji||'')}" style="max-width:70px;"></div>
+      <div class="f"><label>Nombre</label><input id="pe_name_${p.id}" value="${esc(p.name)}"></div>
+    </div>
+    <div class="eg eg${isMayOnly?'2':'3'}" style="margin-bottom:8px;">
+      <div class="f"><label>${isMayOnly?(isARS?'Precio $ARS':'Precio USD'):(isARS?'Precio solo $ARS':'Precio MAY USD')}</label>
+        <input id="pe_may_${p.id}" type="number" value="${p.may||0}"></div>
+      ${!isMayOnly?`<div class="f"><label>${isARS?'Precio con celular $ARS':'(Minorista = +$20 auto)'}</label>
+        <input id="pe_alt_${p.id}" type="number" value="${p.alt||0}" ${mode==='usd_dual'?'disabled placeholder="auto"':''}></div>`:''}
+      <div class="f"><label>Batería %</label><input id="pe_bat_${p.id}" type="number" value="${p.battery||''}"></div>
+    </div>
+    <div class="eg eg3" style="margin-bottom:8px;">
+      <div class="f"><label>Stock</label><select id="pe_st_${p.id}">
+        <option value="1" ${p.stock?'selected':''}>✓ Disponible</option>
+        <option value="0" ${!p.stock?'selected':''}>✗ Sin stock</option>
+      </select></div>
+      <div class="f"><label>Nota</label><input id="pe_note_${p.id}" value="${esc(p.note||'')}"></div>
+      <div class="f"><label>Extra / categoría</label><input id="pe_extra_${p.id}" value="${esc(p.extra||'')}"></div>
+    </div>
+    <div style="display:flex;gap:6px;justify-content:flex-end;">
+      <button class="btn btn-ghost btn-sm" onclick="closeProdEdit('${p.id}')">Cancelar</button>
+      <button class="btn btn-primary btn-sm" onclick="saveProdEdit('${activeListId}','${p.id}','${mode}')">Guardar</button>
+    </div>`;
+}
+
+function toggleProdEdit(id){
+  const ef=gv('pef_'+id);
+  const was=ef.classList.contains('open');
+  document.querySelectorAll('.edit-form.open').forEach(e=>e.classList.remove('open'));
+  if(!was) ef.classList.add('open');
+}
+function closeProdEdit(id){ gv('pef_'+id)?.classList.remove('open') }
+
+function saveProdEdit(listId,prodId,mode){
+  const list=DB.lists.find(l=>l.id===listId); if(!list) return;
+  const p=list.products.find(x=>x.id===prodId); if(!p) return;
+  p.emoji  = v('pe_emo_'+prodId)||p.emoji;
+  p.name   = v('pe_name_'+prodId)||p.name;
+  p.may    = parseFloat(gv('pe_may_'+prodId)?.value)||0;
+  p.alt    = parseFloat(gv('pe_alt_'+prodId)?.value)||0;
+  p.battery= gv('pe_bat_'+prodId)?.value?.trim()||'';
+  p.stock  = gv('pe_st_'+prodId)?.value==='1';
+  p.note   = v('pe_note_'+prodId);
+  p.extra  = v('pe_extra_'+prodId);
+  save(); renderDetailProds(); toast('✅ Guardado','green');
+}
+
+function deleteProd(listId,prodId){
+  if(!confirm('¿Eliminar producto?'))return;
+  const list=DB.lists.find(l=>l.id===listId); if(!list) return;
+  list.products=list.products.filter(p=>p.id!==prodId);
+  save(); renderDetailProds(); toast('🗑 Eliminado');
+}
+
+function openAddProd(){
+  const list=DB.lists.find(l=>l.id===activeListId); if(!list) return;
+  const form=gv('addProdForm'); if(!form) return;
+  const mode=list.priceMode;
+  const isMayOnly=mode==='usd_single'||mode==='ars_single';
+  const isARS=mode.startsWith('ars');
+  form.classList.add('open');
+  form.innerHTML=`<div class="add-form-title">Nuevo producto</div>
+    <div class="eg eg2" style="margin-bottom:8px;">
+      <div class="f"><label>Emoji</label><input id="np_emo" placeholder="📱" style="max-width:70px;"></div>
+      <div class="f"><label>Nombre</label><input id="np_name" placeholder="Nombre del producto"></div>
+    </div>
+    <div class="eg eg${isMayOnly?'2':'3'}" style="margin-bottom:8px;">
+      <div class="f"><label>${isMayOnly?(isARS?'Precio $ARS':'Precio USD'):(isARS?'Precio solo':'Precio MAY')}</label>
+        <input id="np_may" type="number" placeholder="0"></div>
+      ${!isMayOnly&&!( mode==='usd_dual')?`<div class="f"><label>${isARS?'Con celular':''}</label><input id="np_alt" type="number" placeholder="0"></div>`:''}
+      <div class="f"><label>Batería %</label><input id="np_bat" type="number" placeholder=""></div>
+    </div>
+    <div class="eg eg3" style="margin-bottom:8px;">
+      <div class="f"><label>Stock</label><select id="np_st"><option value="1">✓ Disponible</option><option value="0">✗ Sin stock</option></select></div>
+      <div class="f"><label>Nota</label><input id="np_note" placeholder="Color, variante..."></div>
+      <div class="f"><label>Extra / categoría</label><input id="np_extra" placeholder="Ej: Usado"></div>
+    </div>
+    <div style="display:flex;gap:6px;justify-content:flex-end;">
+      <button class="btn btn-ghost btn-sm" onclick="gv('addProdForm').classList.remove('open')">Cancelar</button>
+      <button class="btn btn-primary btn-sm" onclick="confirmAddProd('${activeListId}','${mode}')">Agregar</button>
+    </div>`;
+}
+
+function confirmAddProd(listId,mode){
+  const name=v('np_name'); if(!name){toast('⚠️ Falta el nombre','red');return;}
+  const list=DB.lists.find(l=>l.id===listId); if(!list) return;
+  list.products.push({
+    id:uid(), emoji:v('np_emo')||'▸', name,
+    may:parseFloat(gv('np_may')?.value)||0,
+    alt:parseFloat(gv('np_alt')?.value)||0,
+    battery:gv('np_bat')?.value?.trim()||'',
+    stock:gv('np_st')?.value==='1',
+    note:v('np_note'), extra:v('np_extra')
+  });
+  save(); renderDetailProds(); gv('addProdForm').classList.remove('open');
+  toast('✅ Producto agregado','green');
+}
+
+function renderDetailConds(){
+  const list=DB.lists.find(l=>l.id===activeListId); if(!list) return;
+  const el=gv('detailCondGrid'); if(!el) return;
+  el.innerHTML=list.conditions.map((c,i)=>`
+    <div class="f">
+      <label>${esc(c.label)} <button class="btn btn-danger" style="padding:0 4px;font-size:10px;" onclick="removeListCond('${activeListId}',${i})">✕</button></label>
+      <input value="${esc(c.value)}" onchange="updateListCond('${activeListId}',${i},this.value)">
+    </div>`).join('');
+}
+function updateListCond(lid,i,val){ const l=DB.lists.find(x=>x.id===lid); if(l){l.conditions[i].value=val;save();} }
+function removeListCond(lid,i){ const l=DB.lists.find(x=>x.id===lid); if(l){l.conditions.splice(i,1);save();renderDetailConds();} }
+function addListCond(){
+  const list=DB.lists.find(l=>l.id===activeListId); if(!list) return;
+  const label=prompt('Método de pago:'); if(!label) return;
+  const value=prompt('Condición:'); if(!value) return;
+  list.conditions.push({id:uid(),label,value}); save(); renderDetailConds();
+}
+
+function renderDetailDiscount(){
+  const list=DB.lists.find(l=>l.id===activeListId); if(!list) return;
+  const card=gv('discountCard'); if(!card) return;
+  if(!list.hasDiscount){ card.style.display='none'; return; }
+  card.style.display='block';
+  gv('discountBody').innerHTML=`
+    <div class="eg eg3" style="margin-bottom:8px;">
+      <div class="f"><label>Compra mínima ($ARS)</label><input type="number" value="${list.minOrder||0}" onchange="updateDisc('${list.id}','minOrder',this.value)"></div>
+      <div class="f"><label>Descuento 1 — desde</label><input type="number" value="${list.disc1From||0}" onchange="updateDisc('${list.id}','disc1From',this.value)"></div>
+      <div class="f"><label>Descuento 1 — %</label><input type="number" value="${list.disc1Pct||0}" onchange="updateDisc('${list.id}','disc1Pct',this.value)"></div>
+    </div>
+    <div class="eg eg2">
+      <div class="f"><label>Descuento 2 — desde</label><input type="number" value="${list.disc2From||0}" onchange="updateDisc('${list.id}','disc2From',this.value)"></div>
+      <div class="f"><label>Descuento 2 — %</label><input type="number" value="${list.disc2Pct||0}" onchange="updateDisc('${list.id}','disc2Pct',this.value)"></div>
+    </div>`;
+}
+function updateDisc(lid,field,val){ const l=DB.lists.find(x=>x.id===lid); if(l){l[field]=parseFloat(val)||0;save();} }
+
+// ── List Modal ──
+function openNewListModal(){
+  editingListId=null;
+  gv('modalListTitle').textContent='Nueva lista';
+  gv('saveListBtn').textContent='Crear lista';
+  ['listEmoji','listName','listDesc'].forEach(id=>gv(id).value='');
+  gv('listPriceMode').value='usd_dual';
+  gv('listColor').value='blue';
+  gv('listHasDiscount').value='0';
+  openModal('modalList');
+}
+function openEditListModal(id){
+  const lid=id||activeListId;
+  const list=DB.lists.find(l=>l.id===lid); if(!list) return;
+  editingListId=lid;
+  gv('modalListTitle').textContent='Editar lista';
+  gv('saveListBtn').textContent='Guardar cambios';
+  gv('listEmoji').value=list.emoji||'';
+  gv('listName').value=list.name||'';
+  gv('listDesc').value=list.desc||'';
+  gv('listPriceMode').value=list.priceMode||'usd_dual';
+  gv('listColor').value=list.color||'blue';
+  gv('listHasDiscount').value=list.hasDiscount?'1':'0';
+  openModal('modalList');
+}
+function saveListModal(){
+  const name=v('listName'); if(!name){toast('⚠️ Falta el nombre','red');return;}
+  const obj={
+    emoji:v('listEmoji')||'📋', name, desc:v('listDesc'),
+    color:gv('listColor').value,
+    priceMode:gv('listPriceMode').value,
+    hasDiscount:gv('listHasDiscount').value==='1',
+    minOrder:0,disc1From:0,disc1Pct:0,disc2From:0,disc2Pct:0,
+    conditions:[], products:[]
+  };
+  if(editingListId){
+    const i=DB.lists.findIndex(l=>l.id===editingListId);
+    if(i>=0){ Object.assign(DB.lists[i],{emoji:obj.emoji,name:obj.name,desc:obj.desc,color:obj.color,priceMode:obj.priceMode,hasDiscount:obj.hasDiscount}); }
+  } else {
+    obj.id=uid();
+    DB.lists.push(obj);
+  }
+  save(); closeModal('modalList');
+  showListsGrid();
+  toast(editingListId?'✅ Lista actualizada':'✅ Lista creada','green');
+}
+function deleteList(id){
+  if(!confirm('¿Eliminar esta lista y todos sus productos?'))return;
+  DB.lists=DB.lists.filter(l=>l.id!==id);
+  save(); showListsGrid(); toast('🗑 Lista eliminada');
+}
+
+// ════════════════════════════════════════════════════════
+// TEMPLATES PAGE
+// ════════════════════════════════════════════════════════
+let editingTmplId=null;
+
+function renderTemplates(){
+  const el=gv('tmplList'); if(!el) return;
+  el.innerHTML=DB.templates.map(t=>`
+    <div class="card" style="margin-bottom:10px;">
+      <div class="card-header">
+        <div class="card-title">${t.emoji} ${esc(t.name)} ${t.builtin?'<span class="badge badge-gray">built-in</span>':''}</div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-ghost btn-sm" onclick="openEditTmplModal('${t.id}')">✏️ Editar</button>
+          ${!t.builtin?`<button class="btn btn-danger btn-sm" onclick="deleteTmpl('${t.id}')">🗑</button>`:''}
+        </div>
+      </div>
+      <div class="card-body" style="padding:10px 14px;">
+        <div style="font-size:12px;color:var(--text3);line-height:1.6;">
+          <div><strong>Línea:</strong> ${esc(t.line)}</div>
+          <div><strong>Título:</strong> ${esc(t.title)}</div>
+          <div><strong>Subtítulo:</strong> ${esc(t.subtitle)}</div>
+          <div><strong>Bullet:</strong> ${esc(t.bullet)} &nbsp;&nbsp; <strong>Cierre:</strong> ${esc(t.closeMsg)}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openNewTmplModal(){
+  editingTmplId=null;
+  gv('modalTmplTitle').textContent='Nueva plantilla';
+  gv('saveTmplBtn').textContent='Crear plantilla';
+  ['tmplEmoji','tmplName','tmplLine','tmplTitle','tmplSubtitle','tmplBullet','tmplClose','tmplFooter'].forEach(id=>gv(id).value='');
+  gv('tmplBullet').value='▸';
+  gv('tmplSubtitle').value='_Precios al {{fecha}}_';
+  openModal('modalTmpl');
+}
+function openEditTmplModal(id){
+  const t=DB.templates.find(x=>x.id===id); if(!t) return;
+  editingTmplId=id;
+  gv('modalTmplTitle').textContent='Editar plantilla';
+  gv('saveTmplBtn').textContent='Guardar cambios';
+  gv('tmplEmoji').value=t.emoji||'';
+  gv('tmplName').value=t.name||'';
+  gv('tmplLine').value=t.line||'';
+  gv('tmplTitle').value=t.title||'';
+  gv('tmplSubtitle').value=t.subtitle||'';
+  gv('tmplBullet').value=t.bullet||'▸';
+  gv('tmplClose').value=t.closeMsg||'';
+  gv('tmplFooter').value=t.footer||'';
+  openModal('modalTmpl');
+}
+function saveTmplModal(){
+  const name=v('tmplName'); if(!name){toast('⚠️ Falta el nombre','red');return;}
+  const obj={
+    emoji:v('tmplEmoji')||'📋', name,
+    line:v('tmplLine'), title:v('tmplTitle'),
+    subtitle:v('tmplSubtitle'), bullet:v('tmplBullet')||'▸',
+    closeMsg:v('tmplClose'), footer:v('tmplFooter'),
+  };
+  if(editingTmplId){
+    const i=DB.templates.findIndex(t=>t.id===editingTmplId);
+    if(i>=0){ const was=DB.templates[i].builtin; Object.assign(DB.templates[i],obj); if(was) DB.templates[i].builtin=true; }
+  } else {
+    obj.id=uid(); obj.builtin=false;
+    DB.templates.push(obj);
+  }
+  save(); closeModal('modalTmpl'); renderTemplates();
+  toast(editingTmplId?'✅ Plantilla actualizada':'✅ Plantilla creada','green');
+}
+function deleteTmpl(id){
+  if(!confirm('¿Eliminar esta plantilla?'))return;
+  DB.templates=DB.templates.filter(t=>t.id!==id);
+  save(); renderTemplates(); toast('🗑 Eliminado');
+}
+
+// ════════════════════════════════════════════════════════
+// SAVED MESSAGES
+// ════════════════════════════════════════════════════════
+let filterTag=null;
+let pendingTags=[];
+
+const TAG_COLORS=['blue','green','gold','purple','red'];
+function tagColor(tag){
+  let h=0; for(let c of tag) h=(h*31+c.charCodeAt(0))&0xffffff;
+  return TAG_COLORS[Math.abs(h)%TAG_COLORS.length];
+}
+
+function renderSaved(){
+  // tag filter
+  const allTags=[...new Set(DB.saved.flatMap(m=>m.tags||[]))];
+  const tf=gv('tagFilter'); if(tf){
+    tf.innerHTML=`<span class="tag ${!filterTag?'tag-blue':''}" onclick="setTagFilter(null)" style="cursor:pointer;">Todos</span>`
+    +allTags.map(t=>`<span class="tag tag-${tagColor(t)} ${filterTag===t?'':'opacity: .7'}" onclick="setTagFilter('${t}')" style="cursor:pointer;">${esc(t)}</span>`).join('');
+  }
+  const el=gv('savedList'); if(!el) return;
+  const msgs=filterTag ? DB.saved.filter(m=>(m.tags||[]).includes(filterTag)) : DB.saved;
+  if(!msgs.length){ el.innerHTML='<div class="empty"><div class="empty-icon">💬</div>Ningún mensaje guardado todavía.</div>'; return; }
+  el.innerHTML=[...msgs].reverse().map(m=>`
+    <div class="msg-card">
+      <div class="msg-card-header">
+        <div class="msg-card-title">${esc(m.name)}</div>
+        <button class="btn btn-danger btn-xs" onclick="deleteSaved('${m.id}')">🗑</button>
+      </div>
+      <div class="msg-card-tags">${(m.tags||[]).map(t=>`<span class="tag tag-${tagColor(t)}">${esc(t)}</span>`).join('')}</div>
+      <div class="msg-card-preview">${esc(m.content)}</div>
+      <div class="msg-card-actions">
+        <button class="btn btn-ghost btn-sm" onclick="copySaved('${m.id}')">📋 Copiar</button>
+        <button class="btn btn-ghost btn-sm" onclick="editSaved('${m.id}')">✏️ Editar</button>
+      </div>
+    </div>`).join('');
+}
+function setTagFilter(t){ filterTag=t; renderSaved(); }
+
+function openNewSavedModal(){
+  gv('saveMsgName').value='';
+  gv('saveMsgContent').value='';
+  gv('saveMsgTags').innerHTML='';
+  pendingTags=[];
+  openModal('modalSaveMsg');
+}
+function addTagOnEnter(e){
+  if(e.key!=='Enter'&&e.key!==',') return;
+  e.preventDefault();
+  const tag=v('saveMsgTagInput'); if(!tag) return;
+  if(!pendingTags.includes(tag)) pendingTags.push(tag);
+  gv('saveMsgTagInput').value='';
+  renderPendingTags();
+}
+function removeTag(t){ pendingTags=pendingTags.filter(x=>x!==t); renderPendingTags(); }
+function renderPendingTags(){
+  gv('saveMsgTags').innerHTML=pendingTags.map(t=>`<span class="tag tag-${tagColor(t)}">${esc(t)} <span class="tag-x" onclick="removeTag('${t}')">✕</span></span>`).join('');
+}
+function confirmSaveMsg(){
+  const name=v('saveMsgName'); if(!name){toast('⚠️ Ponele un nombre','red');return;}
+  const content=gv('saveMsgContent').value.trim(); if(!content){toast('⚠️ Falta el contenido','red');return;}
+  // check if extra tag from input
+  const extra=v('saveMsgTagInput');
+  if(extra&&!pendingTags.includes(extra)) pendingTags.push(extra);
+  const newMsg = {name,tags:[...pendingTags],content,ts:Date.now()};
+  const fireId = await saveUserMessage(newMsg);
+  newMsg.id = fireId||uid();
+  DB.saved.push(newMsg);
+  saveLocal(); closeModal('modalSaveMsg');
+  toast('💾 Mensaje guardado','blue');
+  renderSaved();
+}
+function copySaved(id){
+  const m=DB.saved.find(x=>x.id===id); if(!m) return;
+  navigator.clipboard.writeText(m.content).then(()=>toast('📋 Copiado!','green'))
+    .catch(()=>{const ta=document.createElement('textarea');ta.value=m.content;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('📋 Copiado!','green');});
+}
+function editSaved(id){
+  const m=DB.saved.find(x=>x.id===id); if(!m) return;
+  pendingTags=[...(m.tags||[])];
+  gv('saveMsgName').value=m.name;
+  gv('saveMsgContent').value=m.content;
+  renderPendingTags();
+  openModal('modalSaveMsg');
+  // override confirm to update
+  gv('modalSaveMsg').querySelector('.modal-footer .btn-primary').onclick=()=>{
+    const name=v('saveMsgName'); if(!name) return;
+    m.name=name; m.content=gv('saveMsgContent').value.trim();
+    const extra=v('saveMsgTagInput');
+    if(extra&&!pendingTags.includes(extra)) pendingTags.push(extra);
+    m.tags=[...pendingTags];
+    save(); closeModal('modalSaveMsg'); renderSaved();
+    toast('✅ Actualizado','green');
+    gv('modalSaveMsg').querySelector('.modal-footer .btn-primary').onclick=confirmSaveMsg;
+  };
+}
+async function deleteSaved(id){
+  if(!confirm('¿Eliminar?'))return;
+  await deleteUserMessage(id);
+  DB.saved=DB.saved.filter(m=>m.id!==id);
+  saveLocal(); renderSaved(); toast('🗑 Eliminado');
+}
+
+// ════════════════════════════════════════════════════════
+// IMPORT / EXPORT
+// ════════════════════════════════════════════════════════
+function exportAll(){
+  const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='iphone_club_v5.json';a.click();
+  toast('⬇ Backup exportado');
+}
+function importAll(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{
+      try{
+        const d=JSON.parse(ev.target.result);
+        if(d.lists&&d.templates){DB=d;save();goPage('generate');toast('✅ Importado!','green');}
+        else toast('⚠️ Archivo inválido','red');
+      }catch{toast('⚠️ Error al leer','red');}
+    };r.readAsText(f);
+  };inp.click();
+}
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+genListId = DB.lists[0]?.id||null;
+genTmplId = DB.templates[0]?.id||null;
+genCats = DB.lists[0]?.products.filter(p=>p.stock).map(p=>p.id)||[];
+renderGenerate();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(r => console.log('SW registrado:', r.scope))
+      .catch(e => console.log('SW error:', e));
+  });
+}
+
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(r => console.log('SW registrado:', r.scope))
+      .catch(e => console.log('SW error:', e));
+  });
+}
+</script>
+</body>
+</html>
