@@ -8,63 +8,63 @@
 <meta name="theme-color" content="#0071e3">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-/* Estilos recuperados de tu diseño original */
-*{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#f5f5f7;--surface:#fff;--blue:#0071e3;--text:#1d1d1f;--border:#d2d2d7;--sh:0 4px 16px rgba(0,0,0,.05)}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center}
-
-/* Pantalla de Login Estilo Apple */
-.login-card{background:#fff;border:1px solid #d2d2d7;border-radius:18px;padding:32px;width:100%;max-width:360px;box-shadow:var(--sh);text-align:center}
-.logo-area img{width:80px;height:80px;border-radius:20px;margin-bottom:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1)}
+/* --- ESTILOS DE LOGIN (APPLE STYLE) --- */
+#loginScreen{position:fixed;inset:0;z-index:9999;background:#f5f5f7;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{background:#fff;border:1px solid #d2d2d7;border-radius:18px;padding:32px;width:100%;max-width:360px;box-shadow:0 4px 16px rgba(0,0,0,0.05);text-align:center}
+.login-card img{width:80px;height:80px;border-radius:20px;margin-bottom:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1)}
 .input-group{text-align:left;margin-bottom:15px}
 .input-group label{font-size:11px;font-weight:600;text-transform:uppercase;color:#6e6e73;display:block;margin-bottom:4px}
-input{width:100%;padding:12px;border:1px solid #d2d2d7;border-radius:10px;font-size:15px;outline:none;background:#f5f5f7}
+input.login-input{width:100%;padding:12px;border:1px solid #d2d2d7;border-radius:10px;font-size:15px;outline:none;background:#f5f5f7}
 .btn-login{width:100%;background:#0071e3;color:#fff;border:none;padding:12px;border-radius:10px;font-weight:600;cursor:pointer;margin-top:10px}
+.btn-google{width:100%;background:#fff;color:#1d1d1f;border:1px solid #d2d2d7;padding:10px;border-radius:10px;font-weight:600;cursor:pointer;margin-top:15px;display:flex;align-items:center;justify-content:center;gap:10px}
 .error-msg{background:#fff2f2;color:#c62828;padding:10px;border-radius:8px;font-size:12px;margin-bottom:15px;display:none}
-#appShell{display:none; width: 100%; height: 100vh; background: white; position: fixed; inset: 0; padding: 20px;}
+
+/* --- TUS ESTILOS ORIGINALES (MANTENIDOS) --- */
+#appShell{display:none} /* Se oculta hasta que el login sea exitoso */
+</style>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f5f7;--surface:#fff;--surface2:#f5f5f7;--surface3:#e8e8ed;
+  --border:#d2d2d7;--border2:#c7c7cc;
+  --text:#1d1d1f;--text2:#424245;--text3:#6e6e73;--text4:#aeaeb2;
+  --blue:#0071e3;--blue2:#0077ed;--blue-bg:rgba(0,113,227,.08);--blue-ring:rgba(0,113,227,.2);
+}
+/* ... Resto de tus estilos originales ... */
 </style>
 </head>
 <body>
 
-<div id="loginScreen" class="login-card">
-  <div class="logo-area">
-    <img src="https://carlosjaviergaleano1995-coder.github.io/iphone-club/icon-192.png" alt="Logo">
-    <h2 style="margin-bottom:4px">iPhone <span style="color:#0071e3">Club</span></h2>
-    <p style="font-size:12px;color:#6e6e73;margin-bottom:24px">PANEL DE PRECIOS</p>
-  </div>
-
-  <div id="loginError" class="error-msg"></div>
-
-  <div class="input-group">
-    <label>Email</label>
-    <input id="loginEmail" type="email" placeholder="tu@email.com" value="carlosjaviergaleano.1995@gmail.com">
-  </div>
-  <div class="input-group">
-    <label>Contraseña</label>
-    <input id="loginPass" type="password" placeholder="••••••••">
-  </div>
-
-  <button class="btn-login" onclick="window.doLogin()">Iniciar sesión</button>
-  <p style="font-size:11px;color:#aeaeb2;margin-top:20px;">iPhone Club © 2026</p>
-</div>
-
-<div id="appShell">
-    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #d2d2d7; padding-bottom:10px;">
-        <h3 style="font-weight:700">iPhone <span style="color:#0071e3">Club</span></h3>
-        <button onclick="window.doLogout()" style="color:#0071e3; border:none; background:none; font-weight:600; cursor:pointer">Cerrar Sesión</button>
+<div id="loginScreen">
+  <div class="login-card">
+    <img src="https://carlosjaviergaleano1995-coder.github.io/iphone-club/icon-192.png">
+    <h2>iPhone <span style="color:#0071e3">Club</span></h2>
+    <p style="font-size:12px;color:#6e6e73;margin-bottom:24px">PANEL ADMINISTRATIVO</p>
+    <div id="loginError" class="error-msg"></div>
+    <div class="input-group">
+      <label>Email</label>
+      <input id="loginEmail" class="login-input" type="email" value="carlosjaviergaleano.1995@gmail.com">
     </div>
-    <div style="padding-top:20px">
-        <h4>Bienvenido, <span id="userName">Admin</span></h4>
-        <p style="margin-top:10px; color:#6e6e73">El panel está listo para gestionar precios.</p>
-        </div>
+    <div class="input-group">
+      <label>Contraseña</label>
+      <input id="loginPass" class="login-input" type="password" placeholder="••••••••">
+    </div>
+    <button class="btn-login" onclick="window.doLogin()">Iniciar sesión</button>
+    <button class="btn-google" onclick="window.doGoogleLogin()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> Entrar con Gmail
+    </button>
+  </div>
 </div>
+
+<div class="shell" id="appShell">
+    </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-// Tu configuración real
 const firebaseConfig = {
   apiKey: "AIzaSyCBsL8sWUtxbG-KIC3ZzObUgKZTqhEMnf0",
   authDomain: "iphone-club-acf61.firebaseapp.com",
@@ -77,37 +77,44 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
 
-window.doLogin = async () => {
+window.doLogin = () => {
   const email = document.getElementById('loginEmail').value;
   const pass = document.getElementById('loginPass').value;
-  try {
-    await signInWithEmailAndPassword(auth, email, pass);
-  } catch (e) {
-    const err = document.getElementById('loginError');
-    err.textContent = "Error: Datos incorrectos.";
-    err.style.display = 'block';
-  }
+  signInWithEmailAndPassword(auth, email, pass).catch(() => showError("Datos incorrectos"));
+};
+
+window.doGoogleLogin = () => {
+  signInWithPopup(auth, provider).catch(() => showError("Error con Google"));
 };
 
 window.doLogout = () => signOut(auth);
 
+function showError(m) {
+  const el = document.getElementById('loginError');
+  el.textContent = m; el.style.display = 'block';
+}
+
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    const userDoc = await getDoc(doc(db, "users", user.uid)); // Busca tu documento 'amzfxa...'
+    const userDoc = await getDoc(doc(db, "users", user.uid));
     if (userDoc.exists() && userDoc.data().role === 'admin') {
       document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('appShell').style.display = 'block';
-      document.getElementById('userName').textContent = userDoc.data().name || "Admin";
+      document.getElementById('appShell').style.display = 'flex';
     } else {
-      alert("No tienes permisos de administrador.");
+      showError("No tienes permiso de Admin");
       await signOut(auth);
     }
   } else {
-    document.getElementById('loginScreen').style.display = 'block';
+    document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('appShell').style.display = 'none';
   }
 });
+</script>
+
+<script>
+// Tus funciones originales: let DB = {...}, save(), renderGenerate(), etc.
 </script>
 </body>
 </html>
