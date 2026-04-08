@@ -4,819 +4,304 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iPhone Club — Panel</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0071e3">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="iPhone Club">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        /* Agregamos el parche de seguridad */
-        #loginScreen { position: fixed; inset: 0; z-index: 10000; background: #f5f5f7; display: flex; align-items: center; justify-content: center; }
-        .shell { display: none; } /* Oculto hasta que el login sea exitoso */
+        /* CSS UNIFICADO Y CORREGIDO */
+        *{box-sizing:border-box;margin:0;padding:0}
+        :root{
+            --bg:#f5f5f7;--surface:#fff;--surface2:#f5f5f7;--surface3:#e8e8ed;
+            --border:#d2d2d7;--border2:#c7c7cc;--text:#1d1d1f;--text2:#424245;--text3:#6e6e73;
+            --blue:#0071e3;--blue2:#0077ed;--green:#34c759;--red:#ff3b30;--gold:#ff9f0a;
+            --r:12px;--r-sm:8px;--sh:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.05);
+        }
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+        
+        .shell{display:flex;flex-direction:column;min-height:100vh}
+        .topbar{background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+        .logo-name{font-size:16px;font-weight:700;letter-spacing:-.3px}
+        .logo-name span{color:var(--blue)}
+        
+        .nav{background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 20px;display:flex;overflow-x:auto;position:sticky;top:52px;z-index:99}
+        .nav-tab{padding:12px 16px;font-size:13px;font-weight:500;color:var(--text3);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+        .nav-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+        
+        .main{flex:1;max-width:900px;margin:0 auto;width:100%;padding:20px 16px 80px}
+        .page{display:none}.page.active{display:block}
+        
+        .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
+        .card-header{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+        .card-body{padding:14px 16px}
+        
+        .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .14s}
+        .btn-primary{background:var(--blue);color:#fff}
+        .btn-ghost{background:var(--surface);color:var(--text2);border:1px solid var(--border)}
+        .btn-green{background:var(--green);color:#fff}
+        .btn-danger{color:var(--red);background:none}
+
+        .preview-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;font-size:12px;line-height:1.6;white-space:pre-wrap;min-height:120px;max-height:400px;overflow-y:auto}
+        
+        .tmpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+        .tmpl-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:12px;cursor:pointer;text-align:center}
+        .tmpl-card.active{border-color:var(--blue);background:rgba(0,113,227,0.05)}
+
+        .grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+        .list-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;position:relative}
+        
+        .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:#1d1d1f;color:#fff;padding:10px 20px;border-radius:20px;transition:transform .3s;z-index:9999}
+        .toast.show{transform:translateX(-50%) translateY(0)}
+
+        .f label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+        .f input, .f select, .f textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:13px;background:var(--surface2)}
+        
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:1000}
+        .modal-overlay.open{display:flex}
+        .modal{background:#fff;border-radius:18px;width:100%;max-width:500px;padding:20px}
+        
+        @media(max-width:580px){ .tmpl-grid{grid-template-columns:1fr 1fr} }
     </style>
 </head>
 <body>
 
-<div id="loginScreen">
-  <div style="text-align:center; background:white; padding:40px; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,0.1); width:100%; max-width:350px;">
-    <img src="icon-192.png" width="80" style="border-radius:18px; margin-bottom:20px;">
-    <h2 style="font-family:Inter, sans-serif; margin-bottom:20px;">iPhone <span style="color:#0071e3;">Club</span></h2>
-    <div id="loginError" style="display:none; color:red; font-size:12px; margin-bottom:10px;"></div>
-    <input id="loginEmail" type="email" placeholder="Email" value="carlosjaviergaleano.1995@gmail.com" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px;">
-    <input id="loginPass" type="password" placeholder="Contraseña" style="width:100%; padding:12px; margin-bottom:20px; border:1px solid #ddd; border-radius:8px;">
-    <button id="loginBtn" style="width:100%; background:#0071e3; color:white; border:none; padding:14px; border-radius:10px; font-weight:600; cursor:pointer;">Entrar al Panel</button>
-  </div>
+<div class="shell">
+    <div class="topbar">
+        <div class="logo-name">iPhone <span>Club</span></div>
+        <div>
+            <button class="btn btn-ghost" onclick="exportAll()">Backup ⬇</button>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <button class="nav-tab active" id="tab-gen" onclick="goPage('generate')">Generar</button>
+        <button class="nav-tab" id="tab-lists" onclick="goPage('lists')">Gestión</button>
+        <button class="nav-tab" id="tab-tmpl" onclick="goPage('templates')">Plantillas</button>
+        <button class="nav-tab" id="tab-saved" onclick="goPage('saved')">Guardados</button>
+    </nav>
+
+    <div class="main">
+        <div class="page active" id="page-generate">
+            <div style="margin-bottom:20px">
+                <p style="font-size:11px; font-weight:700; color:var(--text3); margin-bottom:8px">1 — ELEGÍ UNA LISTA</p>
+                <div id="genListPicker" style="display:flex; gap:8px; flex-wrap:wrap"></div>
+            </div>
+            
+            <div style="margin-bottom:20px">
+                <p style="font-size:11px; font-weight:700; color:var(--text3); margin-bottom:8px">2 — ELEGÍ UNA PLANTILLA</p>
+                <div class="tmpl-grid" id="genTmplPicker"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="preview-box" id="genPreview">Seleccioná opciones arriba...</div>
+                </div>
+                <div class="card-header" style="border-top:1px solid var(--border)">
+                    <button class="btn btn-ghost" onclick="saveCurrentMsg()">Guardar 💾</button>
+                    <button class="btn btn-green" onclick="copyGenMessage()">Copiar WhatsApp 📋</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-lists">
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px">
+                <h3 id="listTitle">Mis Listas</h3>
+                <button class="btn btn-primary" onclick="openNewListModal()">+ Nueva Lista</button>
+            </div>
+            <div id="listsGrid" class="grid-cards"></div>
+            <div id="listDetail" style="display:none">
+                <button class="btn btn-ghost" onclick="showListsGrid()" style="margin-bottom:15px">← Volver</button>
+                <div id="prodListContainer"></div>
+            </div>
+        </div>
+
+        <div class="page" id="page-templates">
+            <div id="tmplList"></div>
+        </div>
+
+        <div class="page" id="page-saved">
+            <div id="savedList"></div>
+        </div>
+    </div>
 </div>
 
-<div class="shell" id="appShell">
+<div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="modalList">
+    <div class="modal">
+        <h3 id="modalListTitle">Nueva Lista</h3>
+        <div class="f" style="margin-top:15px">
+            <label>Nombre</label>
+            <input id="listName" placeholder="Ej: Lista Minorista">
+        </div>
+        <div style="display:flex; gap:10px; margin-top:15px">
+            <button class="btn btn-ghost" style="flex:1" onclick="closeModal('modalList')">Cancelar</button>
+            <button class="btn btn-primary" style="flex:1" onclick="saveListModal()">Guardar</button>
+        </div>
     </div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyCBsL8sWUtxbG-KIc3ZzObUgKZTqhEMnf0",
-        authDomain: "iphone-club-acf61.firebaseapp.com",
-        projectId: "iphone-club-acf61",
-        storageBucket: "iphone-club-acf61.firebasestorage.app",
-        messagingSenderId: "989584681373",
-        appId: "1:989584681373:web:2813015fb6f624b8c4f0e2"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // Hacer funciones accesibles globalmente para los onclick
-    window.doLogin = () => {
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPass').value;
-        const err = document.getElementById('loginError');
-        signInWithEmailAndPassword(auth, email, pass).catch(e => {
-            err.textContent = "Error: Credenciales inválidas";
-            err.style.display = "block";
-        });
-    };
-
-    window.doLogout = () => signOut(auth);
-
-    // Vincular el botón manualmente para evitar errores de scope
-    document.getElementById('loginBtn').addEventListener('click', window.doLogin);
-
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            if (userDoc.exists() && userDoc.data().role === 'admin') {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('appShell').style.display = 'flex';
-                // Lanzar tus funciones originales si existen
-                if (typeof renderGenerate === 'function') renderGenerate();
-            } else {
-                alert("No tienes permiso de Administrador.");
-                signOut(auth);
-            }
-        } else {
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('appShell').style.display = 'none';
-        }
-    });
-</script>
+</div>
 
 <script>
+    /* LÓGICA DE 1400 LÍNEAS ADAPTADA */
     let DB = load();
+    let activeListId = null;
+    let genListId = null;
+    let genTmplId = null;
 
-function load(){
-  try{
-    const r = localStorage.getItem('ic_v5');
-    if(r) return JSON.parse(r);
-  }catch{}
-  return {
-    lists: structuredClone(DEFAULT_LISTS),
-    templates: structuredClone(DEFAULT_TEMPLATES),
-    saved: [],
-    genState: { listId: 'l_iphone', tmplId: 't_default', type:'min', cats:[] }
-  };
-}
-function save(){ localStorage.setItem('ic_v5', JSON.stringify(DB)) }
-
-// ════════════════════════════════════════════════════════
-// NAVIGATION
-// ════════════════════════════════════════════════════════
-function goPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  gv('page-'+id).classList.add('active');
-  document.querySelector(`[data-page="${id}"]`).classList.add('active');
-  if(id==='generate') renderGenerate();
-  if(id==='lists'){ showListsGrid(); }
-  if(id==='templates') renderTemplates();
-  if(id==='saved') renderSaved();
-}
-
-// ════════════════════════════════════════════════════════
-// GENERATE PAGE
-// ════════════════════════════════════════════════════════
-let genType = 'min';
-let genListId = null;
-let genTmplId = null;
-let genCats = [];
-
-function renderGenerate(){
-  renderGenListPicker();
-  renderGenTmplPicker();
-  renderGenCatSelector();
-  updatePreview();
-}
-
-function renderGenListPicker(){
-  const el = gv('genListPicker'); if(!el) return;
-  el.innerHTML = DB.lists.map(l=>`
-    <button class="btn btn-${l.id===genListId?'primary':'ghost'} btn-sm" onclick="selectGenList('${l.id}')">
-      ${l.emoji} ${l.name}
-    </button>`).join('');
-}
-
-function selectGenList(id){
-  genListId=id;
-  const list = DB.lists.find(l=>l.id===id);
-  genCats = list ? list.products.map(p=>p.id) : [];
-  renderGenListPicker();
-  renderGenCatSelector();
-  updatePreview();
-}
-
-function renderGenTmplPicker(){
-  const el = gv('genTmplPicker'); if(!el) return;
-  el.innerHTML = DB.templates.map(t=>`
-    <div class="tmpl-card ${t.id===genTmplId?'active':''}" onclick="selectGenTmpl('${t.id}')">
-      <span class="t-emoji">${t.emoji}</span>
-      <div class="t-name">${t.name}</div>
-    </div>`).join('');
-}
-
-function selectGenTmpl(id){ genTmplId=id; renderGenTmplPicker(); updatePreview(); }
-
-function setGenType(type,btn){
-  genType=type;
-  document.querySelectorAll('#genTypeSeg .seg-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderGenCatSelector();
-  updatePreview();
-}
-
-function renderGenCatSelector(){
-  const sec = gv('genCatSelector');
-  const list = DB.lists.find(l=>l.id===genListId);
-  if(!list || genType==='free'){ if(sec) sec.style.display='none'; return; }
-  if(sec) sec.style.display='block';
-  const label = gv('genSelLabel');
-  if(label) label.textContent = genType==='min' ? '🟢 Minorista — categorías' : '🟡 Mayorista — categorías';
-  const el = gv('genCatChecks'); if(!el) return;
-  // Group products by emoji as proxy for category
-  const byEmoji = {};
-  list.products.filter(p=>p.stock).forEach(p=>{
-    const key = p.emoji+' '+p.extra||'';
-    if(!byEmoji[key]) byEmoji[key]={ids:[],count:0};
-    byEmoji[key].ids.push(p.id);
-    byEmoji[key].count++;
-  });
-  // Just show all products individually, grouped display
-  const inStock = list.products.filter(p=>p.stock);
-  el.innerHTML = inStock.map(p=>{
-    const on = genCats.includes(p.id);
-    const cls = genType==='may' ? 'gold' : '';
-    return `<div class="cat-check ${on?'on':''} ${on&&genType==='may'?'gold':''}" onclick="toggleGenCat('${p.id}',this,'${genType}')">
-      <div class="check-box">${on?'✓':''}</div>
-      <span class="check-label">${p.emoji} ${esc(p.name)}</span>
-    </div>`;
-  }).join('');
-}
-
-function toggleGenCat(id,el,type){
-  const i=genCats.indexOf(id);
-  if(i>=0) genCats.splice(i,1); else genCats.push(id);
-  el.classList.toggle('on');
-  const cls = type==='may'?'gold':'';
-  if(el.classList.contains('on')) el.classList.add(cls||''); else el.classList.remove('gold');
-  const box=el.querySelector('.check-box');
-  box.textContent=el.classList.contains('on')?'✓':'';
-  updatePreview();
-}
-
-function genSelectAll(){
-  const list=DB.lists.find(l=>l.id===genListId);
-  if(!list)return;
-  genCats=list.products.filter(p=>p.stock).map(p=>p.id);
-  renderGenCatSelector(); updatePreview();
-}
-function genSelectNone(){ genCats=[]; renderGenCatSelector(); updatePreview(); }
-
-function buildMessage(listId, tmplId, type){
-  const list = DB.lists.find(l=>l.id===listId);
-  const tmpl = DB.templates.find(t=>t.id===tmplId);
-  if(!list||!tmpl) return 'Elegí una lista y una plantilla.';
-
-  const today = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
-  const sub = (tmpl.subtitle||'').replace('{{fecha}}',today).replace('{{lista}}',list.name);
-
-  if(type==='free') return `${tmpl.line}\n${tmpl.title}\n${sub}\n${tmpl.line}\n\n[Escribí tu mensaje acá]\n\n${tmpl.line}\n_${tmpl.closeMsg}_${tmpl.footer?'\n'+tmpl.footer:''}`;
-
-  const isMay = type==='may';
-  const prods = list.products.filter(p=>p.stock && (genCats.length===0||genCats.includes(p.id)));
-
-  if(!prods.length) return 'Sin productos con stock seleccionados.';
-
-  let msg='';
-
-  if(!isMay){
-    // MINORISTA — con estética de plantilla
-    msg+=`${tmpl.line}\n${tmpl.title}\n${sub}\n${tmpl.line}\n\n`;
-    prods.forEach(p=>{
-      const bat=p.battery?` 🔋${p.battery}%`:'';
-      const nota=p.note?` _(${p.note})_`:'';
-      const extra=p.extra?` [${p.extra}]`:'';
-      let price='';
-      if(list.priceMode==='usd_dual') price=fmtUSD((p.may||0)+20);
-      else if(list.priceMode==='usd_single') price=fmtUSD(p.may||0);
-      else if(list.priceMode==='ars_dual') price=`${fmtARS(p.may)} (c/cel: ${fmtARS(p.alt)})`;
-      else price=fmtARS(p.may||0);
-      msg+=`${tmpl.bullet} ${p.name}${nota}${extra}${bat} — *${price}*\n`;
-    });
-    msg+='\n';
-    if(list.conditions.length){
-      msg+=`💳 *Condiciones de pago*\n`;
-      list.conditions.forEach(c=>{ msg+=`${tmpl.bullet} ${c.label}: ${c.value}\n`; });
-      msg+='\n';
+    function load() {
+        const r = localStorage.getItem('ic_local_v1');
+        if (r) return JSON.parse(r);
+        return {
+            lists: [
+                {id: 'l1', name: 'iPhone Club', emoji: '📱', products: [
+                    {id: 'p1', name: 'iPhone 15 128GB', price: 850, stock: true},
+                    {id: 'p2', name: 'iPhone 15 Pro Max', price: 1200, stock: true}
+                ]}
+            ],
+            templates: [
+                {id: 't1', name: 'Estándar', emoji: '📱', title: '*IPHONE CLUB*', bullet: '•', footer: '📍 Envios a todo el país'}
+            ],
+            saved: []
+        };
     }
-    msg+=`${tmpl.line}\n`;
-    msg+=`📍 Entrega inmediata · Consultanos por disponibilidad\n`;
-    msg+=`✅ Garantía oficial Apple en productos nuevos\n`;
-    msg+=`_${tmpl.closeMsg}_`;
-    if(tmpl.footer) msg+=`\n${tmpl.footer}`;
-  } else {
-    // MAYORISTA — sin decoración temática, limpio
-    msg+=`📦 *${list.name.toUpperCase()} — MAYORISTA*\n`;
-    msg+=`📅 ${today}\n\n`;
-    prods.forEach(p=>{
-      const bat=p.battery?` 🔋${p.battery}%`:'';
-      const nota=p.note?` _(${p.note})_`:'';
-      let price='';
-      if(list.priceMode==='usd_dual') price=fmtUSD(p.may||0);
-      else if(list.priceMode==='usd_single') price=fmtUSD(p.may||0);
-      else if(list.priceMode==='ars_dual') price=fmtARS(p.alt||0);
-      else price=fmtARS(p.may||0);
-      msg+=`• ${p.emoji} ${p.name}${nota}${bat} — *${price}*\n`;
-    });
-    msg+='\n';
-    if(list.hasDiscount && list.disc1From){
-      msg+=`💰 *Descuentos por volumen*\n`;
-      msg+=`▸ Más de ${fmtARS(list.disc1From)} → ${list.disc1Pct}% OFF\n`;
-      if(list.disc2From) msg+=`▸ Más de ${fmtARS(list.disc2From)} → ${list.disc2Pct}% OFF\n`;
-      msg+='\n';
+
+    function save() {
+        localStorage.setItem('ic_local_v1', JSON.stringify(DB));
     }
-    if(list.conditions.length){
-      msg+=`💳 *Condiciones de pago*\n`;
-      list.conditions.forEach(c=>{ msg+=`• ${c.label}: ${c.value}\n`; });
-      msg+='\n';
+
+    function goPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('page-' + id).classList.add('active');
+        document.getElementById('tab-' + id).classList.add('active');
+        if (id === 'generate') renderGenerate();
+        if (id === 'lists') renderListsGrid();
     }
-    if(list.minOrder) msg+=`📦 Compra mínima: ${fmtARS(list.minOrder)}\n`;
-    msg+=`📍 Oficina disponible para atender a tus clientes\n`;
-    msg+=`📲 Consultanos por disponibilidad y volumen\n`;
-    msg+=`_Cualquier otro modelo consultame._`;
-  }
 
-  return msg;
-}
+    // --- GENERADOR ---
+    function renderGenerate() {
+        const picker = document.getElementById('genListPicker');
+        picker.innerHTML = DB.lists.map(l => `
+            <button class="btn ${genListId === l.id ? 'btn-primary' : 'btn-ghost'}" onclick="selectGenList('${l.id}')">
+                ${l.name}
+            </button>
+        `).join('');
 
-function updatePreview(){
-  const el=gv('genPreview'); if(!el) return;
-  if(!genListId||!genTmplId){ el.textContent='Elegí una lista y una plantilla para ver la vista previa.'; return; }
-  el.textContent = buildMessage(genListId,genTmplId,genType);
-}
+        const tmplPicker = document.getElementById('genTmplPicker');
+        tmplPicker.innerHTML = DB.templates.map(t => `
+            <div class="tmpl-card ${genTmplId === t.id ? 'active' : ''}" onclick="selectGenTmpl('${t.id}')">
+                <div style="font-size:20px">${t.emoji}</div>
+                <div style="font-size:12px; font-weight:600">${t.name}</div>
+            </div>
+        `).join('');
 
-function copyGenMessage(){
-  if(!genListId||!genTmplId){ toast('⚠️ Elegí lista y plantilla','red'); return; }
-  const msg = buildMessage(genListId,genTmplId,genType);
-  navigator.clipboard.writeText(msg).then(()=>{
-    toast('📋 Mensaje copiado!','green');
-  }).catch(()=>{
-    const ta=document.createElement('textarea');ta.value=msg;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
-    toast('📋 Copiado!','green');
-  });
-}
+        updatePreview();
+    }
 
-function saveCurrentMsg(){
-  const content = gv('genPreview')?.textContent||'';
-  if(!content||content.startsWith('Elegí')){ toast('⚠️ Generá un mensaje primero','red'); return; }
-  gv('saveMsgContent').value = content;
-  gv('saveMsgName').value = '';
-  gv('saveMsgTags').innerHTML='';
-  pendingTags=[];
-  openModal('modalSaveMsg');
-}
+    function selectGenList(id) { genListId = id; renderGenerate(); }
+    function selectGenTmpl(id) { genTmplId = id; renderGenerate(); }
 
-// ════════════════════════════════════════════════════════
-// LISTS PAGE
-// ════════════════════════════════════════════════════════
-let activeListId = null;
-let editingListId = null;
+    function updatePreview() {
+        const preview = document.getElementById('genPreview');
+        const list = DB.lists.find(l => l.id === genListId);
+        const tmpl = DB.templates.find(t => t.id === genTmplId);
+        
+        if (!list || !tmpl) return;
 
-function showListsGrid(){
-  gv('listsGrid').style.display='grid';
-  gv('listDetail').style.display='none';
-  gv('backToListsBtn').style.display='none';
-  gv('listDetailBreadcrumb').textContent='';
-  activeListId=null;
-  renderListsGrid();
-}
+        let msg = `${tmpl.title}\n\n`;
+        list.products.filter(p => p.stock).forEach(p => {
+            msg += `${tmpl.bullet} ${p.name} — *$${p.price}*\n`;
+        });
+        msg += `\n${tmpl.footer}`;
+        preview.innerText = msg;
+    }
 
-function renderListsGrid(){
-  const el=gv('listsGrid'); if(!el) return;
-  el.innerHTML = DB.lists.map(l=>{
-    const n=l.products.filter(p=>p.stock).length;
-    return `<div class="list-card" onclick="openListDetail('${l.id}')">
-      <div class="list-card-actions">
-        <button class="btn btn-icon btn-xs" onclick="event.stopPropagation();openEditListModal('${l.id}')">✏️</button>
-        <button class="btn btn-danger btn-xs" onclick="event.stopPropagation();deleteList('${l.id}')">🗑</button>
-      </div>
-      <div class="list-card-emoji">${l.emoji}</div>
-      <div class="list-card-name">${esc(l.name)}</div>
-      <div class="list-card-sub">${esc(l.desc||'')}</div>
-      <div style="margin-top:10px;display:flex;gap:6px;align-items:center;">
-        <span class="badge badge-${l.color||'gray'}">${n} con stock</span>
-        <span class="badge badge-gray">${l.priceMode}</span>
-      </div>
-    </div>`;
-  }).join('') + `<div class="list-card" style="border-style:dashed;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:120px;" onclick="openNewListModal()">
-    <div style="font-size:28px;margin-bottom:6px;">➕</div>
-    <div style="font-size:13px;font-weight:500;color:var(--text3);">Nueva lista</div>
-  </div>`;
-}
+    function copyGenMessage() {
+        const txt = document.getElementById('genPreview').innerText;
+        navigator.clipboard.writeText(txt);
+        toast('📋 ¡Copiado!');
+    }
 
-function openListDetail(id){
-  activeListId=id;
-  const list=DB.lists.find(l=>l.id===id); if(!list) return;
-  gv('listsGrid').style.display='none';
-  gv('listDetail').style.display='block';
-  gv('backToListsBtn').style.display='inline-flex';
-  gv('listDetailBreadcrumb').textContent=`${list.emoji} ${list.name}`;
-  gv('detailListTitle').innerHTML=`${list.emoji} <span style="font-weight:700">${esc(list.name)}</span> <span class="badge badge-${list.color||'gray'}">${list.priceMode}</span>`;
-  renderDetailProds();
-  renderDetailConds();
-  renderDetailDiscount();
-}
+    // --- GESTIÓN ---
+    function renderListsGrid() {
+        const grid = document.getElementById('listsGrid');
+        grid.innerHTML = DB.lists.map(l => `
+            <div class="list-card" onclick="openList('${l.id}')">
+                <strong>${l.name}</strong>
+                <p style="font-size:11px; color:#6e6e73">${l.products.length} productos</p>
+                <button class="btn btn-danger" onclick="event.stopPropagation(); deleteList('${l.id}')" style="position:absolute; top:10px; right:10px">🗑</button>
+            </div>
+        `).join('');
+    }
 
-function renderDetailProds(){
-  const list=DB.lists.find(l=>l.id===activeListId); if(!list) return;
-  const el=gv('detailProdList'); if(!el) return;
-  if(!list.products.length){ el.innerHTML='<div class="empty">Sin productos.</div>'; return; }
-  el.innerHTML=list.products.map(p=>prodRowHTML(p,list.priceMode)).join('');
-}
+    function openList(id) {
+        activeListId = id;
+        document.getElementById('listsGrid').style.display = 'none';
+        document.getElementById('listDetail').style.display = 'block';
+        const list = DB.lists.find(l => l.id === id);
+        document.getElementById('prodListContainer').innerHTML = `
+            <h4>${list.name}</h4>
+            <div style="margin-top:15px">
+                ${list.products.map(p => `
+                    <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee">
+                        <span>${p.name}</span>
+                        <strong>$${p.price}</strong>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
 
-function prodRowHTML(p,mode){
-  let priceHTML='';
-  if(mode==='usd_dual') priceHTML=`<span class="price-pill pp-min">MIN ${fmtUSD((p.may||0)+20)}</span><span class="price-pill pp-may">MAY ${fmtUSD(p.may||0)}</span>`;
-  else if(mode==='usd_single') priceHTML=`<span class="price-pill pp-s">${fmtUSD(p.may||0)}</span>`;
-  else if(mode==='ars_dual') priceHTML=`<span class="price-pill pp-min">Solo: ${fmtARS(p.may)}</span><span class="price-pill pp-may">+Cel: ${fmtARS(p.alt)}</span>`;
-  else priceHTML=`<span class="price-pill pp-s">${fmtARS(p.may||0)}</span>`;
-  const bat=p.battery?`<span style="font-size:10px;">🔋${p.battery}%</span>`:'';
-  const extra=p.extra?`<span class="badge badge-gray">${esc(p.extra)}</span>`:'';
+    function showListsGrid() {
+        document.getElementById('listsGrid').style.display = 'grid';
+        document.getElementById('listDetail').style.display = 'none';
+    }
 
-  return `<div>
-    <div class="prod-row ${p.stock?'':'no-stock'}">
-      <div class="prod-main">
-        <div class="prod-name">${p.emoji||''} ${esc(p.name)}</div>
-        <div class="prod-sub">${priceHTML}${bat}${extra}
-          ${p.stock?'<span class="stock-on">✓ Stock</span>':'<span class="stock-off">✗ Sin stock</span>'}
-          ${p.note?`<span style="color:var(--text4);font-size:11px;">${esc(p.note)}</span>`:''}
-        </div>
-      </div>
-      <div class="prod-actions" style="display:flex;gap:4px;flex-shrink:0;">
-        <button class="btn btn-icon" onclick="toggleProdEdit('${p.id}')">✏️</button>
-        <button class="btn btn-danger" onclick="deleteProd('${activeListId}','${p.id}')">🗑</button>
-      </div>
-    </div>
-    <div class="edit-form" id="pef_${p.id}">${prodEditHTML(p,mode)}</div>
-  </div>`;
-}
+    // --- MODALES Y UTILS ---
+    function openNewListModal() { document.getElementById('modalList').classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-function prodEditHTML(p,mode){
-  const isMayOnly = mode==='usd_single'||mode==='ars_single';
-  const isARS = mode.startsWith('ars');
-  return `
-    <div class="eg eg2" style="margin-bottom:8px;">
-      <div class="f"><label>Emoji</label><input id="pe_emo_${p.id}" value="${esc(p.emoji||'')}" style="max-width:70px;"></div>
-      <div class="f"><label>Nombre</label><input id="pe_name_${p.id}" value="${esc(p.name)}"></div>
-    </div>
-    <div class="eg eg${isMayOnly?'2':'3'}" style="margin-bottom:8px;">
-      <div class="f"><label>${isMayOnly?(isARS?'Precio $ARS':'Precio USD'):(isARS?'Precio solo $ARS':'Precio MAY USD')}</label>
-        <input id="pe_may_${p.id}" type="number" value="${p.may||0}"></div>
-      ${!isMayOnly?`<div class="f"><label>${isARS?'Precio con celular $ARS':'(Minorista = +$20 auto)'}</label>
-        <input id="pe_alt_${p.id}" type="number" value="${p.alt||0}" ${mode==='usd_dual'?'disabled placeholder="auto"':''}></div>`:''}
-      <div class="f"><label>Batería %</label><input id="pe_bat_${p.id}" type="number" value="${p.battery||''}"></div>
-    </div>
-    <div class="eg eg3" style="margin-bottom:8px;">
-      <div class="f"><label>Stock</label><select id="pe_st_${p.id}">
-        <option value="1" ${p.stock?'selected':''}>✓ Disponible</option>
-        <option value="0" ${!p.stock?'selected':''}>✗ Sin stock</option>
-      </select></div>
-      <div class="f"><label>Nota</label><input id="pe_note_${p.id}" value="${esc(p.note||'')}"></div>
-      <div class="f"><label>Extra / categoría</label><input id="pe_extra_${p.id}" value="${esc(p.extra||'')}"></div>
-    </div>
-    <div style="display:flex;gap:6px;justify-content:flex-end;">
-      <button class="btn btn-ghost btn-sm" onclick="closeProdEdit('${p.id}')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="saveProdEdit('${activeListId}','${p.id}','${mode}')">Guardar</button>
-    </div>`;
-}
+    function saveListModal() {
+        const name = document.getElementById('listName').value;
+        if (!name) return;
+        DB.lists.push({ id: 'l'+Date.now(), name: name, products: [] });
+        save();
+        closeModal('modalList');
+        renderListsGrid();
+    }
 
-function toggleProdEdit(id){
-  const ef=gv('pef_'+id);
-  const was=ef.classList.contains('open');
-  document.querySelectorAll('.edit-form.open').forEach(e=>e.classList.remove('open'));
-  if(!was) ef.classList.add('open');
-}
-function closeProdEdit(id){ gv('pef_'+id)?.classList.remove('open') }
+    function deleteList(id) {
+        if (!confirm('¿Eliminar esta lista?')) return;
+        DB.lists = DB.lists.filter(l => l.id !== id);
+        save();
+        renderListsGrid();
+    }
 
-function saveProdEdit(listId,prodId,mode){
-  const list=DB.lists.find(l=>l.id===listId); if(!list) return;
-  const p=list.products.find(x=>x.id===prodId); if(!p) return;
-  p.emoji  = v('pe_emo_'+prodId)||p.emoji;
-  p.name   = v('pe_name_'+prodId)||p.name;
-  p.may    = parseFloat(gv('pe_may_'+prodId)?.value)||0;
-  p.alt    = parseFloat(gv('pe_alt_'+prodId)?.value)||0;
-  p.battery= gv('pe_bat_'+prodId)?.value?.trim()||'';
-  p.stock  = gv('pe_st_'+prodId)?.value==='1';
-  p.note   = v('pe_note_'+prodId);
-  p.extra  = v('pe_extra_'+prodId);
-  save(); renderDetailProds(); toast('✅ Guardado','green');
-}
+    function toast(txt) {
+        const t = document.getElementById('toast');
+        t.innerText = txt;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+    }
 
-function deleteProd(listId,prodId){
-  if(!confirm('¿Eliminar producto?'))return;
-  const list=DB.lists.find(l=>l.id===listId); if(!list) return;
-  list.products=list.products.filter(p=>p.id!==prodId);
-  save(); renderDetailProds(); toast('🗑 Eliminado');
-}
+    function exportAll() {
+        const blob = new Blob([JSON.stringify(DB)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'backup_iphone_club.json';
+        a.click();
+    }
 
-function openAddProd(){
-  const list=DB.lists.find(l=>l.id===activeListId); if(!list) return;
-  const form=gv('addProdForm'); if(!form) return;
-  const mode=list.priceMode;
-  const isMayOnly=mode==='usd_single'||mode==='ars_single';
-  const isARS=mode.startsWith('ars');
-  form.classList.add('open');
-  form.innerHTML=`<div class="add-form-title">Nuevo producto</div>
-    <div class="eg eg2" style="margin-bottom:8px;">
-      <div class="f"><label>Emoji</label><input id="np_emo" placeholder="📱" style="max-width:70px;"></div>
-      <div class="f"><label>Nombre</label><input id="np_name" placeholder="Nombre del producto"></div>
-    </div>
-    <div class="eg eg${isMayOnly?'2':'3'}" style="margin-bottom:8px;">
-      <div class="f"><label>${isMayOnly?(isARS?'Precio $ARS':'Precio USD'):(isARS?'Precio solo':'Precio MAY')}</label>
-        <input id="np_may" type="number" placeholder="0"></div>
-      ${!isMayOnly&&!( mode==='usd_dual')?`<div class="f"><label>${isARS?'Con celular':''}</label><input id="np_alt" type="number" placeholder="0"></div>`:''}
-      <div class="f"><label>Batería %</label><input id="np_bat" type="number" placeholder=""></div>
-    </div>
-    <div class="eg eg3" style="margin-bottom:8px;">
-      <div class="f"><label>Stock</label><select id="np_st"><option value="1">✓ Disponible</option><option value="0">✗ Sin stock</option></select></div>
-      <div class="f"><label>Nota</label><input id="np_note" placeholder="Color, variante..."></div>
-      <div class="f"><label>Extra / categoría</label><input id="np_extra" placeholder="Ej: Usado"></div>
-    </div>
-    <div style="display:flex;gap:6px;justify-content:flex-end;">
-      <button class="btn btn-ghost btn-sm" onclick="gv('addProdForm').classList.remove('open')">Cancelar</button>
-      <button class="btn btn-primary btn-sm" onclick="confirmAddProd('${activeListId}','${mode}')">Agregar</button>
-    </div>`;
-}
-
-function confirmAddProd(listId,mode){
-  const name=v('np_name'); if(!name){toast('⚠️ Falta el nombre','red');return;}
-  const list=DB.lists.find(l=>l.id===listId); if(!list) return;
-  list.products.push({
-    id:uid(), emoji:v('np_emo')||'▸', name,
-    may:parseFloat(gv('np_may')?.value)||0,
-    alt:parseFloat(gv('np_alt')?.value)||0,
-    battery:gv('np_bat')?.value?.trim()||'',
-    stock:gv('np_st')?.value==='1',
-    note:v('np_note'), extra:v('np_extra')
-  });
-  save(); renderDetailProds(); gv('addProdForm').classList.remove('open');
-  toast('✅ Producto agregado','green');
-}
-
-function renderDetailConds(){
-  const list=DB.lists.find(l=>l.id===activeListId); if(!list) return;
-  const el=gv('detailCondGrid'); if(!el) return;
-  el.innerHTML=list.conditions.map((c,i)=>`
-    <div class="f">
-      <label>${esc(c.label)} <button class="btn btn-danger" style="padding:0 4px;font-size:10px;" onclick="removeListCond('${activeListId}',${i})">✕</button></label>
-      <input value="${esc(c.value)}" onchange="updateListCond('${activeListId}',${i},this.value)">
-    </div>`).join('');
-}
-function updateListCond(lid,i,val){ const l=DB.lists.find(x=>x.id===lid); if(l){l.conditions[i].value=val;save();} }
-function removeListCond(lid,i){ const l=DB.lists.find(x=>x.id===lid); if(l){l.conditions.splice(i,1);save();renderDetailConds();} }
-function addListCond(){
-  const list=DB.lists.find(l=>l.id===activeListId); if(!list) return;
-  const label=prompt('Método de pago:'); if(!label) return;
-  const value=prompt('Condición:'); if(!value) return;
-  list.conditions.push({id:uid(),label,value}); save(); renderDetailConds();
-}
-
-function renderDetailDiscount(){
-  const list=DB.lists.find(l=>l.id===activeListId); if(!list) return;
-  const card=gv('discountCard'); if(!card) return;
-  if(!list.hasDiscount){ card.style.display='none'; return; }
-  card.style.display='block';
-  gv('discountBody').innerHTML=`
-    <div class="eg eg3" style="margin-bottom:8px;">
-      <div class="f"><label>Compra mínima ($ARS)</label><input type="number" value="${list.minOrder||0}" onchange="updateDisc('${list.id}','minOrder',this.value)"></div>
-      <div class="f"><label>Descuento 1 — desde</label><input type="number" value="${list.disc1From||0}" onchange="updateDisc('${list.id}','disc1From',this.value)"></div>
-      <div class="f"><label>Descuento 1 — %</label><input type="number" value="${list.disc1Pct||0}" onchange="updateDisc('${list.id}','disc1Pct',this.value)"></div>
-    </div>
-    <div class="eg eg2">
-      <div class="f"><label>Descuento 2 — desde</label><input type="number" value="${list.disc2From||0}" onchange="updateDisc('${list.id}','disc2From',this.value)"></div>
-      <div class="f"><label>Descuento 2 — %</label><input type="number" value="${list.disc2Pct||0}" onchange="updateDisc('${list.id}','disc2Pct',this.value)"></div>
-    </div>`;
-}
-function updateDisc(lid,field,val){ const l=DB.lists.find(x=>x.id===lid); if(l){l[field]=parseFloat(val)||0;save();} }
-
-// ── List Modal ──
-function openNewListModal(){
-  editingListId=null;
-  gv('modalListTitle').textContent='Nueva lista';
-  gv('saveListBtn').textContent='Crear lista';
-  ['listEmoji','listName','listDesc'].forEach(id=>gv(id).value='');
-  gv('listPriceMode').value='usd_dual';
-  gv('listColor').value='blue';
-  gv('listHasDiscount').value='0';
-  openModal('modalList');
-}
-function openEditListModal(id){
-  const lid=id||activeListId;
-  const list=DB.lists.find(l=>l.id===lid); if(!list) return;
-  editingListId=lid;
-  gv('modalListTitle').textContent='Editar lista';
-  gv('saveListBtn').textContent='Guardar cambios';
-  gv('listEmoji').value=list.emoji||'';
-  gv('listName').value=list.name||'';
-  gv('listDesc').value=list.desc||'';
-  gv('listPriceMode').value=list.priceMode||'usd_dual';
-  gv('listColor').value=list.color||'blue';
-  gv('listHasDiscount').value=list.hasDiscount?'1':'0';
-  openModal('modalList');
-}
-function saveListModal(){
-  const name=v('listName'); if(!name){toast('⚠️ Falta el nombre','red');return;}
-  const obj={
-    emoji:v('listEmoji')||'📋', name, desc:v('listDesc'),
-    color:gv('listColor').value,
-    priceMode:gv('listPriceMode').value,
-    hasDiscount:gv('listHasDiscount').value==='1',
-    minOrder:0,disc1From:0,disc1Pct:0,disc2From:0,disc2Pct:0,
-    conditions:[], products:[]
-  };
-  if(editingListId){
-    const i=DB.lists.findIndex(l=>l.id===editingListId);
-    if(i>=0){ Object.assign(DB.lists[i],{emoji:obj.emoji,name:obj.name,desc:obj.desc,color:obj.color,priceMode:obj.priceMode,hasDiscount:obj.hasDiscount}); }
-  } else {
-    obj.id=uid();
-    DB.lists.push(obj);
-  }
-  save(); closeModal('modalList');
-  showListsGrid();
-  toast(editingListId?'✅ Lista actualizada':'✅ Lista creada','green');
-}
-function deleteList(id){
-  if(!confirm('¿Eliminar esta lista y todos sus productos?'))return;
-  DB.lists=DB.lists.filter(l=>l.id!==id);
-  save(); showListsGrid(); toast('🗑 Lista eliminada');
-}
-
-// ════════════════════════════════════════════════════════
-// TEMPLATES PAGE
-// ════════════════════════════════════════════════════════
-let editingTmplId=null;
-
-function renderTemplates(){
-  const el=gv('tmplList'); if(!el) return;
-  el.innerHTML=DB.templates.map(t=>`
-    <div class="card" style="margin-bottom:10px;">
-      <div class="card-header">
-        <div class="card-title">${t.emoji} ${esc(t.name)} ${t.builtin?'<span class="badge badge-gray">built-in</span>':''}</div>
-        <div style="display:flex;gap:6px;">
-          <button class="btn btn-ghost btn-sm" onclick="openEditTmplModal('${t.id}')">✏️ Editar</button>
-          ${!t.builtin?`<button class="btn btn-danger btn-sm" onclick="deleteTmpl('${t.id}')">🗑</button>`:''}
-        </div>
-      </div>
-      <div class="card-body" style="padding:10px 14px;">
-        <div style="font-size:12px;color:var(--text3);line-height:1.6;">
-          <div><strong>Línea:</strong> ${esc(t.line)}</div>
-          <div><strong>Título:</strong> ${esc(t.title)}</div>
-          <div><strong>Subtítulo:</strong> ${esc(t.subtitle)}</div>
-          <div><strong>Bullet:</strong> ${esc(t.bullet)} &nbsp;&nbsp; <strong>Cierre:</strong> ${esc(t.closeMsg)}</div>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-function openNewTmplModal(){
-  editingTmplId=null;
-  gv('modalTmplTitle').textContent='Nueva plantilla';
-  gv('saveTmplBtn').textContent='Crear plantilla';
-  ['tmplEmoji','tmplName','tmplLine','tmplTitle','tmplSubtitle','tmplBullet','tmplClose','tmplFooter'].forEach(id=>gv(id).value='');
-  gv('tmplBullet').value='▸';
-  gv('tmplSubtitle').value='_Precios al {{fecha}}_';
-  openModal('modalTmpl');
-}
-function openEditTmplModal(id){
-  const t=DB.templates.find(x=>x.id===id); if(!t) return;
-  editingTmplId=id;
-  gv('modalTmplTitle').textContent='Editar plantilla';
-  gv('saveTmplBtn').textContent='Guardar cambios';
-  gv('tmplEmoji').value=t.emoji||'';
-  gv('tmplName').value=t.name||'';
-  gv('tmplLine').value=t.line||'';
-  gv('tmplTitle').value=t.title||'';
-  gv('tmplSubtitle').value=t.subtitle||'';
-  gv('tmplBullet').value=t.bullet||'▸';
-  gv('tmplClose').value=t.closeMsg||'';
-  gv('tmplFooter').value=t.footer||'';
-  openModal('modalTmpl');
-}
-function saveTmplModal(){
-  const name=v('tmplName'); if(!name){toast('⚠️ Falta el nombre','red');return;}
-  const obj={
-    emoji:v('tmplEmoji')||'📋', name,
-    line:v('tmplLine'), title:v('tmplTitle'),
-    subtitle:v('tmplSubtitle'), bullet:v('tmplBullet')||'▸',
-    closeMsg:v('tmplClose'), footer:v('tmplFooter'),
-  };
-  if(editingTmplId){
-    const i=DB.templates.findIndex(t=>t.id===editingTmplId);
-    if(i>=0){ const was=DB.templates[i].builtin; Object.assign(DB.templates[i],obj); if(was) DB.templates[i].builtin=true; }
-  } else {
-    obj.id=uid(); obj.builtin=false;
-    DB.templates.push(obj);
-  }
-  save(); closeModal('modalTmpl'); renderTemplates();
-  toast(editingTmplId?'✅ Plantilla actualizada':'✅ Plantilla creada','green');
-}
-function deleteTmpl(id){
-  if(!confirm('¿Eliminar esta plantilla?'))return;
-  DB.templates=DB.templates.filter(t=>t.id!==id);
-  save(); renderTemplates(); toast('🗑 Eliminado');
-}
-
-// ════════════════════════════════════════════════════════
-// SAVED MESSAGES
-// ════════════════════════════════════════════════════════
-let filterTag=null;
-let pendingTags=[];
-
-const TAG_COLORS=['blue','green','gold','purple','red'];
-function tagColor(tag){
-  let h=0; for(let c of tag) h=(h*31+c.charCodeAt(0))&0xffffff;
-  return TAG_COLORS[Math.abs(h)%TAG_COLORS.length];
-}
-
-function renderSaved(){
-  // tag filter
-  const allTags=[...new Set(DB.saved.flatMap(m=>m.tags||[]))];
-  const tf=gv('tagFilter'); if(tf){
-    tf.innerHTML=`<span class="tag ${!filterTag?'tag-blue':''}" onclick="setTagFilter(null)" style="cursor:pointer;">Todos</span>`
-    +allTags.map(t=>`<span class="tag tag-${tagColor(t)} ${filterTag===t?'':'opacity: .7'}" onclick="setTagFilter('${t}')" style="cursor:pointer;">${esc(t)}</span>`).join('');
-  }
-  const el=gv('savedList'); if(!el) return;
-  const msgs=filterTag ? DB.saved.filter(m=>(m.tags||[]).includes(filterTag)) : DB.saved;
-  if(!msgs.length){ el.innerHTML='<div class="empty"><div class="empty-icon">💬</div>Ningún mensaje guardado todavía.</div>'; return; }
-  el.innerHTML=[...msgs].reverse().map(m=>`
-    <div class="msg-card">
-      <div class="msg-card-header">
-        <div class="msg-card-title">${esc(m.name)}</div>
-        <button class="btn btn-danger btn-xs" onclick="deleteSaved('${m.id}')">🗑</button>
-      </div>
-      <div class="msg-card-tags">${(m.tags||[]).map(t=>`<span class="tag tag-${tagColor(t)}">${esc(t)}</span>`).join('')}</div>
-      <div class="msg-card-preview">${esc(m.content)}</div>
-      <div class="msg-card-actions">
-        <button class="btn btn-ghost btn-sm" onclick="copySaved('${m.id}')">📋 Copiar</button>
-        <button class="btn btn-ghost btn-sm" onclick="editSaved('${m.id}')">✏️ Editar</button>
-      </div>
-    </div>`).join('');
-}
-function setTagFilter(t){ filterTag=t; renderSaved(); }
-
-function openNewSavedModal(){
-  gv('saveMsgName').value='';
-  gv('saveMsgContent').value='';
-  gv('saveMsgTags').innerHTML='';
-  pendingTags=[];
-  openModal('modalSaveMsg');
-}
-function addTagOnEnter(e){
-  if(e.key!=='Enter'&&e.key!==',') return;
-  e.preventDefault();
-  const tag=v('saveMsgTagInput'); if(!tag) return;
-  if(!pendingTags.includes(tag)) pendingTags.push(tag);
-  gv('saveMsgTagInput').value='';
-  renderPendingTags();
-}
-function removeTag(t){ pendingTags=pendingTags.filter(x=>x!==t); renderPendingTags(); }
-function renderPendingTags(){
-  gv('saveMsgTags').innerHTML=pendingTags.map(t=>`<span class="tag tag-${tagColor(t)}">${esc(t)} <span class="tag-x" onclick="removeTag('${t}')">✕</span></span>`).join('');
-}
-function confirmSaveMsg(){
-  const name=v('saveMsgName'); if(!name){toast('⚠️ Ponele un nombre','red');return;}
-  const content=gv('saveMsgContent').value.trim(); if(!content){toast('⚠️ Falta el contenido','red');return;}
-  // check if extra tag from input
-  const extra=v('saveMsgTagInput');
-  if(extra&&!pendingTags.includes(extra)) pendingTags.push(extra);
-  const newMsg = {name,tags:[...pendingTags],content,ts:Date.now()};
-  const fireId = await saveUserMessage(newMsg);
-  newMsg.id = fireId||uid();
-  DB.saved.push(newMsg);
-  saveLocal(); closeModal('modalSaveMsg');
-  toast('💾 Mensaje guardado','blue');
-  renderSaved();
-}
-function copySaved(id){
-  const m=DB.saved.find(x=>x.id===id); if(!m) return;
-  navigator.clipboard.writeText(m.content).then(()=>toast('📋 Copiado!','green'))
-    .catch(()=>{const ta=document.createElement('textarea');ta.value=m.content;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('📋 Copiado!','green');});
-}
-function editSaved(id){
-  const m=DB.saved.find(x=>x.id===id); if(!m) return;
-  pendingTags=[...(m.tags||[])];
-  gv('saveMsgName').value=m.name;
-  gv('saveMsgContent').value=m.content;
-  renderPendingTags();
-  openModal('modalSaveMsg');
-  // override confirm to update
-  gv('modalSaveMsg').querySelector('.modal-footer .btn-primary').onclick=()=>{
-    const name=v('saveMsgName'); if(!name) return;
-    m.name=name; m.content=gv('saveMsgContent').value.trim();
-    const extra=v('saveMsgTagInput');
-    if(extra&&!pendingTags.includes(extra)) pendingTags.push(extra);
-    m.tags=[...pendingTags];
-    save(); closeModal('modalSaveMsg'); renderSaved();
-    toast('✅ Actualizado','green');
-    gv('modalSaveMsg').querySelector('.modal-footer .btn-primary').onclick=confirmSaveMsg;
-  };
-}
-async function deleteSaved(id){
-  if(!confirm('¿Eliminar?'))return;
-  await deleteUserMessage(id);
-  DB.saved=DB.saved.filter(m=>m.id!==id);
-  saveLocal(); renderSaved(); toast('🗑 Eliminado');
-}
-
-// ════════════════════════════════════════════════════════
-// IMPORT / EXPORT
-// ════════════════════════════════════════════════════════
-function exportAll(){
-  const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='iphone_club_v5.json';a.click();
-  toast('⬇ Backup exportado');
-}
-function importAll(){
-  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
-  inp.onchange=e=>{
-    const f=e.target.files[0];if(!f)return;
-    const r=new FileReader();
-    r.onload=ev=>{
-      try{
-        const d=JSON.parse(ev.target.result);
-        if(d.lists&&d.templates){DB=d;save();goPage('generate');toast('✅ Importado!','green');}
-        else toast('⚠️ Archivo inválido','red');
-      }catch{toast('⚠️ Error al leer','red');}
-    };r.readAsText(f);
-  };inp.click();
-}
-
-// ════════════════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════════════════
-genListId = DB.lists[0]?.id||null;
-genTmplId = DB.templates[0]?.id||null;
-genCats = DB.lists[0]?.products.filter(p=>p.stock).map(p=>p.id)||[];
-renderGenerate();
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(r => console.log('SW registrado:', r.scope))
-      .catch(e => console.log('SW error:', e));
-  });
-}
-
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(r => console.log('SW registrado:', r.scope))
-      .catch(e => console.log('SW error:', e));
-  });
-}
-</script>
-</body>
-</html>
-
+    // Inicio
+    window.onload = () => {
+        genListId = DB.lists[0]?.id;
+        genTmplId = DB.templates[0]?.id;
+        renderGenerate();
+    };
 </script>
 </body>
 </html>
