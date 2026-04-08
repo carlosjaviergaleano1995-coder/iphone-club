@@ -13,16 +13,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 /* ════════════════════════════════════════════════════════
-   ESTILOS DE LOGIN (APPLE STYLE)
+   SISTEMA DE LOGIN (APPLE STYLE)
    ════════════════════════════════════════════════════════ */
-#loginScreen {
-    position: fixed; inset: 0; z-index: 9999; background: #f5f5f7;
-    display: flex; align-items: center; justify-content: center; padding: 20px;
-}
-.login-card {
-    background: #fff; border: 1px solid #d2d2d7; border-radius: 18px;
-    padding: 32px; width: 100%; max-width: 360px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); text-align: center;
-}
+#loginScreen { position: fixed; inset: 0; z-index: 9999; background: #f5f5f7; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.login-card { background: #fff; border: 1px solid #d2d2d7; border-radius: 18px; padding: 32px; width: 100%; max-width: 360px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); text-align: center; }
 .login-card img { width: 80px; height: 80px; border-radius: 20px; margin-bottom: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 .input-group { text-align: left; margin-bottom: 15px; }
 .input-group label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: #6e6e73; display: block; margin-bottom: 4px; }
@@ -32,7 +26,7 @@
 .error-msg { background: #fff2f2; color: #c62828; padding: 10px; border-radius: 8px; font-size: 12px; margin-bottom: 15px; display: none; }
 
 /* ════════════════════════════════════════════════════════
-   TUS ESTILOS ORIGINALES
+   DISEÑO ORIGINAL DE TU HERRAMIENTA
    ════════════════════════════════════════════════════════ */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -40,29 +34,22 @@
   --border:#d2d2d7;--border2:#c7c7cc;
   --text:#1d1d1f;--text2:#424245;--text3:#6e6e73;--text4:#aeaeb2;
   --blue:#0071e3;--blue2:#0077ed;--blue-bg:rgba(0,113,227,.08);--blue-ring:rgba(0,113,227,.2);
-  --green:#34c759;--green-bg:rgba(52,199,89,.1);
-  --red:#ff3b30;--red-bg:rgba(255,59,48,.08);
-  --gold:#ff9f0a;--gold-bg:rgba(255,159,10,.1);
-  --purple:#af52de;--purple-bg:rgba(175,82,222,.08);
-  --r:12px;--r-sm:8px;--r-xs:6px;
-  --sh:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.05);
+  --r:12px; --r-sm:8px; --sh:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.05);
 }
-body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
 #appShell { display: none; flex-direction: column; min-height: 100vh; }
-
-.topbar{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--border);padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.logo-name{font-size:16px;font-weight:700;letter-spacing:-0.02em}
+.topbar{background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo-name{font-size:16px;font-weight:700}
 .logo-name span{color:var(--blue)}
 .main{flex:1;max-width:900px;margin:0 auto;width:100%;padding:20px 16px 80px}
 .nav-pills{display:flex;gap:6px;background:var(--surface3);padding:4px;border-radius:10px;margin-bottom:24px}
 .pill{flex:1;padding:8px;text-align:center;font-size:13px;font-weight:600;border-radius:7px;cursor:pointer;color:var(--text3);transition:0.2s}
 .pill.active{background:var(--surface);color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
-.card-body{padding:14px 16px}
-.preview-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;font-size:12px;white-space:pre-wrap;min-height:120px;max-height:400px;overflow-y:auto;font-family:inherit;color:var(--text2);line-height:1.5}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 15px;border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:0.2s;user-select:none}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:14px;padding:16px}
+.preview-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;font-size:12px;white-space:pre-wrap;min-height:120px;font-family:inherit}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:8px 15px;border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer;border:none}
 .btn-primary{background:var(--blue);color:#fff}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:1000;display:none;backdrop-filter:blur(10px)}
+.page{display:none} .page.active{display:block}
 </style>
 </head>
 <body>
@@ -70,8 +57,8 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 <div id="loginScreen">
   <div class="login-card">
     <img src="https://carlosjaviergaleano1995-coder.github.io/iphone-club/icon-192.png">
-    <h2>iPhone <span style="color:#0071e3">Club</span></h2>
-    <p style="font-size:12px;color:#6e6e73;margin-bottom:24px">PANEL ADMINISTRATIVO</p>
+    <h2>iPhone <span>Club</span></h2>
+    <p style="font-size:11px;color:#6e6e73;margin-bottom:20px">ACCESO RESTRINGIDO</p>
     <div id="loginError" class="error-msg"></div>
     <div class="input-group">
       <label>Email</label>
@@ -81,43 +68,48 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
       <label>Contraseña</label>
       <input id="loginPass" class="login-input" type="password" placeholder="••••••••">
     </div>
-    <button class="btn-login" onclick="window.doLogin()">Iniciar sesión</button>
+    <button class="btn-login" onclick="window.doLogin()">Entrar</button>
     <button class="btn-google" onclick="window.doGoogleLogin()">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> Entrar con Gmail
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="16"> Entrar con Google
     </button>
   </div>
 </div>
 
-<div class="shell" id="appShell">
+<div id="appShell">
     <div class="topbar">
       <div class="logo-name">iPhone <span>Club</span></div>
-      <div style="display:flex; align-items:center; gap:12px">
-          <button class="btn" style="background:var(--surface3); font-size:11px" onclick="window.doLogout()">Cerrar Sesión</button>
-      </div>
+      <button class="btn" style="background:none; color:var(--blue); font-weight:600" onclick="window.doLogout()">Salir</button>
     </div>
 
     <div class="main">
         <div class="nav-pills">
-            <div class="pill active" onclick="goPage('generate')">Generar</div>
-            <div class="pill" onclick="goPage('lists')">Mis Listas</div>
-            <div class="pill" onclick="goPage('templates')">Plantillas</div>
+            <div class="pill active" id="p-gen" onclick="goPage('generate')">Generar</div>
+            <div class="pill" id="p-list" onclick="goPage('lists')">Mis Listas</div>
+            <div class="pill" id="p-tmpl" onclick="goPage('templates')">Plantillas</div>
         </div>
 
-        <div id="page-generate" class="page">
+        <div id="page-generate" class="page active">
             <div class="card">
-                <div class="card-body">
-                    <div class="preview-box" id="genPreview">Cargando...</div>
-                    <div style="margin-top:16px; display:flex; gap:10px">
-                        <button class="btn btn-primary" style="flex:1" onclick="copyText()">Copiar Lista</button>
-                    </div>
-                </div>
+                <div class="preview-box" id="genPreview">Generando lista...</div>
+                <button class="btn btn-primary" style="width:100%; margin-top:15px" onclick="copyText()">Copiar para WhatsApp</button>
             </div>
         </div>
-        
-        </div>
-</div>
 
-<div id="toast" class="toast"></div>
+        <div id="page-lists" class="page">
+            <div class="card">
+                <h4 style="margin-bottom:10px">Gestión de Inventario</h4>
+                <p style="font-size:12px; color:var(--text3)">Aquí aparecerán tus productos cargados.</p>
+            </div>
+        </div>
+
+        <div id="page-templates" class="page">
+            <div class="card">
+                <h4 style="margin-bottom:10px">Plantillas de Mensaje</h4>
+                <p style="font-size:12px; color:var(--text3)">Configura el formato de tus listas.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
@@ -141,11 +133,11 @@ const provider = new GoogleAuthProvider();
 window.doLogin = () => {
   const email = document.getElementById('loginEmail').value;
   const pass = document.getElementById('loginPass').value;
-  signInWithEmailAndPassword(auth, email, pass).catch(() => showError("Email o contraseña incorrectos"));
+  signInWithEmailAndPassword(auth, email, pass).catch(() => showError("Verificá tus credenciales"));
 };
 
 window.doGoogleLogin = () => {
-  signInWithPopup(auth, provider).catch(() => showError("Error de conexión con Google"));
+  signInWithPopup(auth, provider).catch(() => showError("Error con Google"));
 };
 
 window.doLogout = () => signOut(auth);
@@ -161,10 +153,9 @@ onAuthStateChanged(auth, async (user) => {
     if (userDoc.exists() && userDoc.data().role === 'admin') {
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('appShell').style.display = 'flex';
-      // Iniciar tu lógica original una vez logueado
-      if(typeof renderGenerate === 'function') renderGenerate();
+      renderGenerate();
     } else {
-      showError("Acceso denegado: No eres administrador");
+      showError("Acceso denegado");
       await signOut(auth);
     }
   } else {
@@ -175,45 +166,4 @@ onAuthStateChanged(auth, async (user) => {
 </script>
 
 <script>
-let DB = JSON.parse(localStorage.getItem('iphone_club_db')) || {
-  lists: [{ id: 1, name: 'Lista Base', products: [] }],
-  templates: [{ id: 1, name: 'Template Estándar', content: 'Precios del día:\n{{LIST}}' }]
-};
-
-function save() { localStorage.setItem('iphone_club_db', JSON.stringify(DB)); }
-
-function goPage(p) {
-  document.querySelectorAll('.page').forEach(el => el.style.display = 'none');
-  document.getElementById('page-' + p).style.display = 'block';
-  document.querySelectorAll('.pill').forEach(el => el.classList.remove('active'));
-  event.target.classList.add('active');
-}
-
-function renderGenerate() {
-  const preview = document.getElementById('genPreview');
-  if(!preview) return;
-  preview.textContent = "Aquí aparecerán tus listas generadas...";
-}
-
-function copyText() {
-  const t = document.getElementById('genPreview').innerText;
-  navigator.clipboard.writeText(t);
-  toast('✅ Copiado al portapapeles');
-}
-
-function toast(m) {
-  const t = document.getElementById('toast');
-  t.textContent = m; t.style.display = 'block';
-  setTimeout(() => t.style.display = 'none', 2000);
-}
-
-// Service Worker Registration
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW error', err));
-  });
-}
-</script>
-
-</body>
-</html>
+/* LÓGICA DE TU
